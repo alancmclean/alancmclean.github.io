@@ -96,20 +96,48 @@
 
         .btn-color:hover { border-color: var(--border-hover); }
 
-        .pan-hint {
+        .zoom-controls {
             position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .zoom-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
             background: var(--bg-overlay);
             backdrop-filter: blur(20px);
-            padding: 8px 16px;
-            border-radius: var(--radius);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            font-size: 0.75rem;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 300;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .zoom-btn:hover { background: var(--bg-elevated); }
+        .zoom-btn:active { transform: scale(0.95); }
+        .zoom-btn svg { width: 24px; height: 24px; }
+
+        .zoom-level {
+            text-align: center;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            z-index: 100;
-            opacity: 0.7;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(20px);
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .dropdown { position: relative; }
@@ -519,7 +547,8 @@
             .btn-color { width: 28px; height: 28px; }
             .toolbar-divider { margin: 0 2px; }
             [data-tooltip]::after { display: none; }
-            .pan-hint { font-size: 0.65rem; padding: 6px 12px; }
+            .zoom-controls { bottom: 16px; right: 16px; gap: 6px; }
+            .zoom-btn { width: 44px; height: 44px; }
         }
     </style>
 </head>
@@ -594,7 +623,20 @@
         </button>
     </div>
 
-    <div class="pan-hint">Middle-click + drag or two fingers to pan</div>
+    <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zoomIn()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+        </button>
+        <div class="zoom-level" id="zoomLevel">100%</div>
+        <button class="zoom-btn" onclick="zoomOut()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+        </button>
+        <button class="zoom-btn" onclick="zoomFit()" style="font-size: 0.7rem;">FIT</button>
+    </div>
 
     <div class="panel-overlay" id="panelOverlay" onclick="closePanel()">
         <div class="panel" onclick="event.stopPropagation()">
@@ -684,7 +726,10 @@
             panStartX: 0,
             panStartY: 0,
             offsetX: 0,
-            offsetY: 0
+            offsetY: 0,
+            zoom: 1,
+            pinchStartDist: 0,
+            pinchStartZoom: 1
         };
 
         const COLORS = [
@@ -789,22 +834,26 @@
         }
 
         function render() {
+            const z = state.zoom;
+            const scaledCell = CELL * z;
+            const scaledBead = BEAD_SIZE * z;
+
             // Dark background
             ctx.fillStyle = '#0a0a0f';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Calculate visible grid area
-            const startCol = Math.floor(-state.offsetX / CELL) - 2;
-            const endCol = Math.ceil((canvas.width - state.offsetX) / CELL) + 2;
-            const startRow = Math.floor(-state.offsetY / CELL) - 2;
-            const endRow = Math.ceil((canvas.height - state.offsetY) / CELL) + 2;
+            // Calculate visible grid area (accounting for zoom)
+            const startCol = Math.floor(-state.offsetX / scaledCell) - 2;
+            const endCol = Math.ceil((canvas.width - state.offsetX) / scaledCell) + 2;
+            const startRow = Math.floor(-state.offsetY / scaledCell) - 2;
+            const endRow = Math.ceil((canvas.height - state.offsetY) / scaledCell) + 2;
 
             // Draw empty slots for visible area
             for (let r = startRow; r < endRow; r++) {
                 for (let c = startCol; c < endCol; c++) {
                     const pos = getBeadScreenPosition(r, c);
                     if (!state.beads[`${r},${c}`]) {
-                        drawEmpty(pos.x, pos.y, BEAD_SIZE / 2);
+                        drawEmpty(pos.x, pos.y, scaledBead / 2);
                     }
                 }
             }
@@ -814,28 +863,45 @@
                 const [r, c] = key.split(',').map(Number);
                 const pos = getBeadScreenPosition(r, c);
                 // Only draw if on screen
-                if (pos.x > -BEAD_SIZE && pos.x < canvas.width + BEAD_SIZE &&
-                    pos.y > -BEAD_SIZE && pos.y < canvas.height + BEAD_SIZE) {
-                    drawBead(pos.x, pos.y, BEAD_SIZE / 2, bead.color, bead.shape || state.beadShape);
+                if (pos.x > -scaledBead && pos.x < canvas.width + scaledBead &&
+                    pos.y > -scaledBead && pos.y < canvas.height + scaledBead) {
+                    drawBead(pos.x, pos.y, scaledBead / 2, bead.color, bead.shape || state.beadShape);
                 }
             });
         }
 
         function getBeadScreenPosition(row, col) {
-            const offsetX = (state.gridType === 'offset' && row % 2) ? BEAD_SIZE / 2 : 0;
+            const z = state.zoom;
+            const scaledCell = CELL * z;
+            const scaledBead = BEAD_SIZE * z;
+            const offsetX = (state.gridType === 'offset' && row % 2) ? scaledBead / 2 : 0;
             return {
-                x: col * CELL + state.offsetX + offsetX + BEAD_SIZE / 2,
-                y: row * CELL + state.offsetY + BEAD_SIZE / 2
+                x: col * scaledCell + state.offsetX + offsetX + scaledBead / 2,
+                y: row * scaledCell + state.offsetY + scaledBead / 2
             };
         }
 
         function getGridPosition(screenX, screenY) {
+            const z = state.zoom;
+            const scaledCell = CELL * z;
+            const scaledBead = BEAD_SIZE * z;
             // Approximate row first (ignoring offset)
-            const approxRow = Math.round((screenY - state.offsetY - BEAD_SIZE / 2) / CELL);
-            const offsetX = (state.gridType === 'offset' && approxRow % 2) ? BEAD_SIZE / 2 : 0;
-            const col = Math.round((screenX - state.offsetX - offsetX - BEAD_SIZE / 2) / CELL);
+            const approxRow = Math.round((screenY - state.offsetY - scaledBead / 2) / scaledCell);
+            const offsetX = (state.gridType === 'offset' && approxRow % 2) ? scaledBead / 2 : 0;
+            const col = Math.round((screenX - state.offsetX - offsetX - scaledBead / 2) / scaledCell);
             return { r: approxRow, c: col };
         }
+
+        // Zoom functions
+        function setZoom(z) {
+            state.zoom = Math.max(0.25, Math.min(3, z));
+            document.getElementById('zoomLevel').textContent = Math.round(state.zoom * 100) + '%';
+            render();
+        }
+
+        function zoomIn() { setZoom(state.zoom * 1.25); }
+        function zoomOut() { setZoom(state.zoom / 1.25); }
+        function zoomFit() { setZoom(1); state.offsetX = 0; state.offsetY = 0; render(); }
 
         function drawBead(x, y, r, color, shape) {
             ctx.save();
@@ -960,8 +1026,11 @@
 
         // Touch events
         let touchMode = null;
-        let lastTouchDist = 0;
         let lastTouchCenter = { x: 0, y: 0 };
+
+        function getTouchDistance(t1, t2) {
+            return Math.sqrt((t1.clientX - t2.clientX) ** 2 + (t1.clientY - t2.clientY) ** 2);
+        }
 
         canvas.addEventListener('touchstart', e => {
             if (e.touches.length === 1) {
@@ -970,10 +1039,12 @@
                 state.isPainting = true;
                 paint(e.touches[0].clientX, e.touches[0].clientY);
             } else if (e.touches.length === 2) {
-                // Two fingers - pan
-                touchMode = 'pan';
+                // Two fingers - pan and zoom
+                touchMode = 'pinch';
                 state.isPainting = false;
                 const t1 = e.touches[0], t2 = e.touches[1];
+                state.pinchStartDist = getTouchDistance(t1, t2);
+                state.pinchStartZoom = state.zoom;
                 lastTouchCenter = {
                     x: (t1.clientX + t2.clientX) / 2,
                     y: (t1.clientY + t2.clientY) / 2
@@ -987,12 +1058,19 @@
         canvas.addEventListener('touchmove', e => {
             if (touchMode === 'paint' && e.touches.length === 1) {
                 paint(e.touches[0].clientX, e.touches[0].clientY);
-            } else if (touchMode === 'pan' && e.touches.length === 2) {
+            } else if (touchMode === 'pinch' && e.touches.length === 2) {
                 const t1 = e.touches[0], t2 = e.touches[1];
                 const center = {
                     x: (t1.clientX + t2.clientX) / 2,
                     y: (t1.clientY + t2.clientY) / 2
                 };
+
+                // Zoom
+                const dist = getTouchDistance(t1, t2);
+                const newZoom = state.pinchStartZoom * (dist / state.pinchStartDist);
+                setZoom(newZoom);
+
+                // Pan
                 state.offsetX = center.x - state.panStartX;
                 state.offsetY = center.y - state.panStartY;
                 render();
@@ -1004,10 +1082,10 @@
             if (e.touches.length === 0) {
                 touchMode = null;
                 state.isPainting = false;
-            } else if (e.touches.length === 1 && touchMode === 'pan') {
-                // Switched from 2 fingers to 1 - switch to paint mode
-                touchMode = 'paint';
-                state.isPainting = true;
+            } else if (e.touches.length === 1 && touchMode === 'pinch') {
+                // Switched from 2 fingers to 1 - don't immediately paint
+                touchMode = null;
+                state.isPainting = false;
             }
         });
 
@@ -1486,4 +1564,3 @@
     </script>
 </body>
 </html>
-
