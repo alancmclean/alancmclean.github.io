@@ -729,8 +729,14 @@
             offsetY: 0,
             zoom: 1,
             pinchStartDist: 0,
-            pinchStartZoom: 1
+            pinchStartZoom: 1,
+            needsRender: true,
+            lastZoom: 1
         };
+
+        // Sprite cache for pre-rendered beads
+        const spriteCache = new Map();
+        const SPRITE_SIZE = 24; // Slightly larger than BEAD_SIZE for anti-aliasing
 
         const COLORS = [
             '#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#0ea5e9',
@@ -777,10 +783,11 @@
             initTemplates();
             loadDesigns();
             if (state.designs.length > 0) selectDesign(state.designs[0].id);
-            else resetCanvas();
+            else { resetCanvas(); state.needsRender = true; }
             setColor(state.currentColor);
             resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            scheduleRender();
+            window.addEventListener('resize', () => { resizeCanvas(); scheduleRender(); });
         }
 
         function initColorPalette() {
@@ -824,13 +831,92 @@
             state.beads = {};
             state.offsetX = 0;
             state.offsetY = 0;
-            render();
+            state.needsRender = true;
         }
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            render();
+            state.needsRender = true;
+        }
+
+        // Get or create cached sprite for a bead
+        function getSprite(color, shape) {
+            const key = `${color}-${shape}`;
+            if (spriteCache.has(key)) return spriteCache.get(key);
+
+            const sprite = document.createElement('canvas');
+            sprite.width = SPRITE_SIZE;
+            sprite.height = SPRITE_SIZE;
+            const sctx = sprite.getContext('2d');
+            const r = SPRITE_SIZE / 2 - 2;
+            const cx = SPRITE_SIZE / 2, cy = SPRITE_SIZE / 2;
+
+            // Draw bead to sprite
+            const drawFns = {
+                round: () => {
+                    const g = sctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, 0, cx, cy, r);
+                    g.addColorStop(0, lighten(color, 50)); g.addColorStop(0.5, color); g.addColorStop(1, darken(color, 35));
+                    sctx.beginPath(); sctx.arc(cx, cy, r * 0.9, 0, Math.PI * 2); sctx.fillStyle = g; sctx.fill();
+                    sctx.beginPath(); sctx.arc(cx - r * 0.3, cy - r * 0.3, r * 0.18, 0, Math.PI * 2); sctx.fillStyle = 'rgba(255,255,255,0.5)'; sctx.fill();
+                },
+                bicone: () => {
+                    sctx.beginPath(); sctx.moveTo(cx, cy - r * 0.9); sctx.lineTo(cx + r * 0.8, cy); sctx.lineTo(cx, cy + r * 0.9); sctx.lineTo(cx - r * 0.8, cy); sctx.closePath();
+                    const g = sctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+                    g.addColorStop(0, lighten(color, 35)); g.addColorStop(0.5, color); g.addColorStop(1, darken(color, 25)); sctx.fillStyle = g; sctx.fill();
+                    sctx.strokeStyle = darken(color, 45); sctx.lineWidth = 0.5;
+                    sctx.beginPath(); sctx.moveTo(cx, cy - r * 0.9); sctx.lineTo(cx, cy + r * 0.9); sctx.stroke();
+                    sctx.beginPath(); sctx.moveTo(cx - r * 0.8, cy); sctx.lineTo(cx + r * 0.8, cy); sctx.stroke();
+                },
+                oval: () => {
+                    sctx.beginPath(); sctx.ellipse(cx, cy, r * 0.65, r * 0.9, 0, 0, Math.PI * 2);
+                    const g = sctx.createRadialGradient(cx - r * 0.2, cy - r * 0.3, 0, cx, cy, r);
+                    g.addColorStop(0, lighten(color, 50)); g.addColorStop(0.6, color); g.addColorStop(1, darken(color, 35)); sctx.fillStyle = g; sctx.fill();
+                },
+                faceted: () => {
+                    sctx.beginPath();
+                    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 - Math.PI / 2; const px = cx + Math.cos(a) * r * 0.85; const py = cy + Math.sin(a) * r * 0.85; i === 0 ? sctx.moveTo(px, py) : sctx.lineTo(px, py); }
+                    sctx.closePath();
+                    const g = sctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+                    g.addColorStop(0, lighten(color, 35)); g.addColorStop(0.5, color); g.addColorStop(1, darken(color, 25)); sctx.fillStyle = g; sctx.fill();
+                    sctx.strokeStyle = darken(color, 35); sctx.lineWidth = 0.5;
+                    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 - Math.PI / 2; sctx.beginPath(); sctx.moveTo(cx, cy); sctx.lineTo(cx + Math.cos(a) * r * 0.85, cy + Math.sin(a) * r * 0.85); sctx.stroke(); }
+                },
+                cube: () => {
+                    const s = r * 0.75;
+                    sctx.fillStyle = color; sctx.fillRect(cx - s, cy - s, s * 2, s * 2);
+                    sctx.fillStyle = lighten(color, 25); sctx.beginPath(); sctx.moveTo(cx - s, cy - s); sctx.lineTo(cx - s * 0.5, cy - s * 1.25); sctx.lineTo(cx + s * 1.5, cy - s * 1.25); sctx.lineTo(cx + s, cy - s); sctx.closePath(); sctx.fill();
+                    sctx.fillStyle = darken(color, 25); sctx.beginPath(); sctx.moveTo(cx + s, cy - s); sctx.lineTo(cx + s * 1.5, cy - s * 1.25); sctx.lineTo(cx + s * 1.5, cy + s * 0.75); sctx.lineTo(cx + s, cy + s); sctx.closePath(); sctx.fill();
+                },
+                teardrop: () => {
+                    sctx.beginPath(); sctx.moveTo(cx, cy - r * 0.9); sctx.quadraticCurveTo(cx + r * 0.9, cy - r * 0.3, cx + r * 0.6, cy + r * 0.5); sctx.quadraticCurveTo(cx, cy + r * 0.9, cx - r * 0.6, cy + r * 0.5); sctx.quadraticCurveTo(cx - r * 0.9, cy - r * 0.3, cx, cy - r * 0.9); sctx.closePath();
+                    const g = sctx.createRadialGradient(cx - r * 0.2, cy - r * 0.2, 0, cx, cy, r);
+                    g.addColorStop(0, lighten(color, 50)); g.addColorStop(0.6, color); g.addColorStop(1, darken(color, 35)); sctx.fillStyle = g; sctx.fill();
+                }
+            };
+
+            (drawFns[shape] || drawFns.round)();
+            spriteCache.set(key, sprite);
+            return sprite;
+        }
+
+        // Clear sprite cache when zoom changes significantly
+        function clearSpriteCache() {
+            spriteCache.clear();
+        }
+
+        // Render loop using requestAnimationFrame
+        let renderScheduled = false;
+        function scheduleRender() {
+            if (renderScheduled) return;
+            renderScheduled = true;
+            requestAnimationFrame(() => {
+                renderScheduled = false;
+                if (state.needsRender) {
+                    render();
+                    state.needsRender = false;
+                }
+            });
         }
 
         function render() {
@@ -838,35 +924,51 @@
             const scaledCell = CELL * z;
             const scaledBead = BEAD_SIZE * z;
 
+            // Clear sprite cache if zoom changed
+            if (Math.abs(z - state.lastZoom) > 0.01) {
+                clearSpriteCache();
+                state.lastZoom = z;
+            }
+
             // Dark background
             ctx.fillStyle = '#0a0a0f';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Calculate visible grid area (accounting for zoom)
-            const startCol = Math.floor(-state.offsetX / scaledCell) - 2;
-            const endCol = Math.ceil((canvas.width - state.offsetX) / scaledCell) + 2;
-            const startRow = Math.floor(-state.offsetY / scaledCell) - 2;
-            const endRow = Math.ceil((canvas.height - state.offsetY) / scaledCell) + 2;
+            const startCol = Math.floor(-state.offsetX / scaledCell) - 1;
+            const endCol = Math.ceil((canvas.width - state.offsetX) / scaledCell) + 1;
+            const startRow = Math.floor(-state.offsetY / scaledCell) - 1;
+            const endRow = Math.ceil((canvas.height - state.offsetY) / scaledCell) + 1;
 
-            // Draw empty slots for visible area
+            // Draw empty slots (simplified - just dots)
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
             for (let r = startRow; r < endRow; r++) {
                 for (let c = startCol; c < endCol; c++) {
-                    const pos = getBeadScreenPosition(r, c);
                     if (!state.beads[`${r},${c}`]) {
-                        drawEmpty(pos.x, pos.y, scaledBead / 2);
+                        const pos = getBeadScreenPosition(r, c);
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, scaledBead * 0.15, 0, Math.PI * 2);
+                        ctx.fill();
                     }
                 }
             }
 
-            // Draw all beads
+            // Draw visible beads using sprites
+            const spriteScale = scaledBead / (SPRITE_SIZE - 4);
             Object.entries(state.beads).forEach(([key, bead]) => {
                 const [r, c] = key.split(',').map(Number);
+                if (r < startRow - 1 || r > endRow + 1 || c < startCol - 1 || c > endCol + 1) return;
+
                 const pos = getBeadScreenPosition(r, c);
-                // Only draw if on screen
-                if (pos.x > -scaledBead && pos.x < canvas.width + scaledBead &&
-                    pos.y > -scaledBead && pos.y < canvas.height + scaledBead) {
-                    drawBead(pos.x, pos.y, scaledBead / 2, bead.color, bead.shape || state.beadShape);
-                }
+                if (pos.x < -scaledBead || pos.x > canvas.width + scaledBead ||
+                    pos.y < -scaledBead || pos.y > canvas.height + scaledBead) return;
+
+                const sprite = getSprite(bead.color, bead.shape || state.beadShape);
+                ctx.drawImage(sprite,
+                    pos.x - scaledBead / 2 - 2 * spriteScale,
+                    pos.y - scaledBead / 2 - 2 * spriteScale,
+                    SPRITE_SIZE * spriteScale,
+                    SPRITE_SIZE * spriteScale);
             });
         }
 
@@ -885,7 +987,6 @@
             const z = state.zoom;
             const scaledCell = CELL * z;
             const scaledBead = BEAD_SIZE * z;
-            // Approximate row first (ignoring offset)
             const approxRow = Math.round((screenY - state.offsetY - scaledBead / 2) / scaledCell);
             const offsetX = (state.gridType === 'offset' && approxRow % 2) ? scaledBead / 2 : 0;
             const col = Math.round((screenX - state.offsetX - offsetX - scaledBead / 2) / scaledCell);
@@ -896,70 +997,13 @@
         function setZoom(z) {
             state.zoom = Math.max(0.25, Math.min(3, z));
             document.getElementById('zoomLevel').textContent = Math.round(state.zoom * 100) + '%';
-            render();
+            state.needsRender = true;
+            scheduleRender();
         }
 
         function zoomIn() { setZoom(state.zoom * 1.25); }
         function zoomOut() { setZoom(state.zoom / 1.25); }
-        function zoomFit() { setZoom(1); state.offsetX = 0; state.offsetY = 0; render(); }
-
-        function drawBead(x, y, r, color, shape) {
-            ctx.save();
-            const fn = { round: drawRound, bicone: drawBicone, oval: drawOval, faceted: drawFaceted, cube: drawCube, teardrop: drawTeardrop }[shape];
-            if (fn) fn(x, y, r, color);
-            ctx.restore();
-        }
-
-        function drawRound(x, y, r, c) {
-            const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, 0, x, y, r);
-            g.addColorStop(0, lighten(c, 50)); g.addColorStop(0.5, c); g.addColorStop(1, darken(c, 35));
-            ctx.beginPath(); ctx.arc(x, y, r * 0.9, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
-            ctx.beginPath(); ctx.arc(x - r * 0.3, y - r * 0.3, r * 0.18, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
-        }
-
-        function drawBicone(x, y, r, c) {
-            ctx.beginPath(); ctx.moveTo(x, y - r * 0.9); ctx.lineTo(x + r * 0.8, y); ctx.lineTo(x, y + r * 0.9); ctx.lineTo(x - r * 0.8, y); ctx.closePath();
-            const g = ctx.createLinearGradient(x - r, y - r, x + r, y + r);
-            g.addColorStop(0, lighten(c, 35)); g.addColorStop(0.5, c); g.addColorStop(1, darken(c, 25)); ctx.fillStyle = g; ctx.fill();
-            ctx.strokeStyle = darken(c, 45); ctx.lineWidth = 0.5;
-            ctx.beginPath(); ctx.moveTo(x, y - r * 0.9); ctx.lineTo(x, y + r * 0.9); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(x - r * 0.8, y); ctx.lineTo(x + r * 0.8, y); ctx.stroke();
-        }
-
-        function drawOval(x, y, r, c) {
-            ctx.beginPath(); ctx.ellipse(x, y, r * 0.65, r * 0.9, 0, 0, Math.PI * 2);
-            const g = ctx.createRadialGradient(x - r * 0.2, y - r * 0.3, 0, x, y, r);
-            g.addColorStop(0, lighten(c, 50)); g.addColorStop(0.6, c); g.addColorStop(1, darken(c, 35)); ctx.fillStyle = g; ctx.fill();
-        }
-
-        function drawFaceted(x, y, r, c) {
-            ctx.beginPath();
-            for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 - Math.PI / 2; const px = x + Math.cos(a) * r * 0.85; const py = y + Math.sin(a) * r * 0.85; i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py); }
-            ctx.closePath();
-            const g = ctx.createLinearGradient(x - r, y - r, x + r, y + r);
-            g.addColorStop(0, lighten(c, 35)); g.addColorStop(0.5, c); g.addColorStop(1, darken(c, 25)); ctx.fillStyle = g; ctx.fill();
-            ctx.strokeStyle = darken(c, 35); ctx.lineWidth = 0.5;
-            for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 - Math.PI / 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * r * 0.85, y + Math.sin(a) * r * 0.85); ctx.stroke(); }
-        }
-
-        function drawCube(x, y, r, c) {
-            const s = r * 0.75;
-            ctx.fillStyle = c; ctx.fillRect(x - s, y - s, s * 2, s * 2);
-            ctx.fillStyle = lighten(c, 25); ctx.beginPath(); ctx.moveTo(x - s, y - s); ctx.lineTo(x - s * 0.5, y - s * 1.25); ctx.lineTo(x + s * 1.5, y - s * 1.25); ctx.lineTo(x + s, y - s); ctx.closePath(); ctx.fill();
-            ctx.fillStyle = darken(c, 25); ctx.beginPath(); ctx.moveTo(x + s, y - s); ctx.lineTo(x + s * 1.5, y - s * 1.25); ctx.lineTo(x + s * 1.5, y + s * 0.75); ctx.lineTo(x + s, y + s); ctx.closePath(); ctx.fill();
-        }
-
-        function drawTeardrop(x, y, r, c) {
-            ctx.beginPath(); ctx.moveTo(x, y - r * 0.9); ctx.quadraticCurveTo(x + r * 0.9, y - r * 0.3, x + r * 0.6, y + r * 0.5); ctx.quadraticCurveTo(x, y + r * 0.9, x - r * 0.6, y + r * 0.5); ctx.quadraticCurveTo(x - r * 0.9, y - r * 0.3, x, y - r * 0.9); ctx.closePath();
-            const g = ctx.createRadialGradient(x - r * 0.2, y - r * 0.2, 0, x, y, r);
-            g.addColorStop(0, lighten(c, 50)); g.addColorStop(0.6, c); g.addColorStop(1, darken(c, 35)); ctx.fillStyle = g; ctx.fill();
-        }
-
-        function drawEmpty(x, y, r) {
-            ctx.beginPath(); ctx.arc(x, y, r * 0.3, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255,255,255,0.015)'; ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1; ctx.stroke();
-        }
+        function zoomFit() { setZoom(1); state.offsetX = 0; state.offsetY = 0; state.needsRender = true; scheduleRender(); }
 
         function lighten(c, p) { const n = parseInt(c.slice(1), 16); const a = Math.round(2.55 * p); return '#' + [16, 8, 0].map(s => Math.min(255, ((n >> s) & 0xFF) + a).toString(16).padStart(2, '0')).join(''); }
         function darken(c, p) { const n = parseInt(c.slice(1), 16); const a = Math.round(2.55 * p); return '#' + [16, 8, 0].map(s => Math.max(0, ((n >> s) & 0xFF) - a).toString(16).padStart(2, '0')).join(''); }
@@ -973,21 +1017,20 @@
             } else {
                 state.beads[k] = { color: state.currentColor, shape: state.beadShape };
             }
-            render();
-            scheduleAutoSave();
+            state.needsRender = true;
+            scheduleRender();
+            markDirty();
         }
 
         // Mouse events
         canvas.addEventListener('mousedown', e => {
             if (e.button === 1) {
-                // Middle click - start panning
                 e.preventDefault();
                 state.isPanning = true;
                 state.panStartX = e.clientX - state.offsetX;
                 state.panStartY = e.clientY - state.offsetY;
                 canvas.style.cursor = 'grabbing';
             } else if (e.button === 0) {
-                // Left click - paint
                 e.preventDefault();
                 state.isPainting = true;
                 paint(e.clientX, e.clientY);
@@ -998,7 +1041,8 @@
             if (state.isPanning) {
                 state.offsetX = e.clientX - state.panStartX;
                 state.offsetY = e.clientY - state.panStartY;
-                render();
+                state.needsRender = true;
+                scheduleRender();
             } else if (state.isPainting) {
                 paint(e.clientX, e.clientY);
             }
@@ -1017,8 +1061,9 @@
             e.preventDefault();
             const pos = getGridPosition(e.clientX, e.clientY);
             delete state.beads[`${pos.r},${pos.c}`];
-            render();
-            scheduleAutoSave();
+            state.needsRender = true;
+            scheduleRender();
+            markDirty();
         });
 
         // Prevent middle click scroll
@@ -1068,12 +1113,14 @@
                 // Zoom
                 const dist = getTouchDistance(t1, t2);
                 const newZoom = state.pinchStartZoom * (dist / state.pinchStartDist);
-                setZoom(newZoom);
+                state.zoom = Math.max(0.25, Math.min(3, newZoom));
+                document.getElementById('zoomLevel').textContent = Math.round(state.zoom * 100) + '%';
 
                 // Pan
                 state.offsetX = center.x - state.panStartX;
                 state.offsetY = center.y - state.panStartY;
-                render();
+                state.needsRender = true;
+                scheduleRender();
             }
             e.preventDefault();
         }, { passive: false });
@@ -1092,9 +1139,9 @@
         // Controls
         document.getElementById('customColor').addEventListener('input', e => setColor(e.target.value));
 
-        function setGridType(t) { state.gridType = t; document.querySelectorAll('.grid-type-btn').forEach(b => b.classList.toggle('active', b.dataset.grid === t)); render(); scheduleAutoSave(); }
+        function setGridType(t) { state.gridType = t; document.querySelectorAll('.grid-type-btn').forEach(b => b.classList.toggle('active', b.dataset.grid === t)); state.needsRender = true; scheduleRender(); markDirty(); }
         function toggleEraser() { state.isEraser = !state.isEraser; document.getElementById('eraserBtn').classList.toggle('active', state.isEraser); }
-        function clearCanvas() { if (Object.keys(state.beads).length && !confirm('Clear all beads?')) return; resetCanvas(); scheduleAutoSave(); }
+        function clearCanvas() { if (Object.keys(state.beads).length && !confirm('Clear all beads?')) return; resetCanvas(); markDirty(); }
 
         function setColor(c) {
             state.currentColor = c;
@@ -1122,29 +1169,90 @@
 
         // Storage
         const STORAGE = 'beadDesigns';
-        function loadDesigns() { try { state.designs = JSON.parse(localStorage.getItem(STORAGE)) || []; } catch { state.designs = []; } renderDesigns(); }
-        function saveDesigns() { localStorage.setItem(STORAGE, JSON.stringify(state.designs)); }
+        let isDirty = false;
+        let saveTimeout = null;
+
+        function loadDesigns() {
+            try { state.designs = JSON.parse(localStorage.getItem(STORAGE)) || []; }
+            catch { state.designs = []; }
+            renderDesigns();
+        }
+
+        function saveDesigns() {
+            try {
+                localStorage.setItem(STORAGE, JSON.stringify(state.designs));
+                isDirty = false;
+            } catch (e) {
+                console.error('Save failed:', e);
+                toast('Save failed - storage full?');
+            }
+        }
 
         function getCurrentData() {
             return {
                 gridType: state.gridType,
                 beads: { ...state.beads },
                 offsetX: state.offsetX,
-                offsetY: state.offsetY
+                offsetY: state.offsetY,
+                zoom: state.zoom
             };
         }
 
         function loadDesignData(d) {
             state.gridType = d.gridType || 'offset';
-            state.beads = { ...d.beads } || {};
+            state.beads = d.beads ? { ...d.beads } : {};
             state.offsetX = d.offsetX || 0;
             state.offsetY = d.offsetY || 0;
+            state.zoom = d.zoom || 1;
             document.querySelectorAll('.grid-type-btn').forEach(b => b.classList.toggle('active', b.dataset.grid === state.gridType));
-            render();
+            document.getElementById('zoomLevel').textContent = Math.round(state.zoom * 100) + '%';
+            clearSpriteCache();
+            state.needsRender = true;
+            scheduleRender();
         }
 
-        let autoSave = null;
-        function scheduleAutoSave() { clearTimeout(autoSave); autoSave = setTimeout(() => { if (state.currentDesignId) { const d = state.designs.find(x => x.id === state.currentDesignId); if (d) { Object.assign(d, getCurrentData()); d.modified = Date.now(); saveDesigns(); renderDesigns(); } } }, 2000); }
+        // Mark design as needing save
+        function markDirty() {
+            isDirty = true;
+
+            // Auto-create design if none exists and there are beads
+            if (!state.currentDesignId && Object.keys(state.beads).length > 0) {
+                const d = {
+                    id: genId(),
+                    name: `Design ${state.designs.length + 1}`,
+                    created: Date.now(),
+                    modified: Date.now(),
+                    ...getCurrentData()
+                };
+                state.designs.unshift(d);
+                state.currentDesignId = d.id;
+                saveDesigns();
+                renderDesigns();
+                return;
+            }
+
+            // Debounced save
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveCurrentDesign, 500);
+        }
+
+        function saveCurrentDesign() {
+            if (!state.currentDesignId || !isDirty) return;
+            const d = state.designs.find(x => x.id === state.currentDesignId);
+            if (d) {
+                Object.assign(d, getCurrentData());
+                d.modified = Date.now();
+                saveDesigns();
+            }
+        }
+
+        // Save on page hide/unload
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isDirty) saveCurrentDesign();
+        });
+        window.addEventListener('beforeunload', () => {
+            if (isDirty) saveCurrentDesign();
+        });
 
         function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
         function newDesign() { document.getElementById('designName').value = `Design ${state.designs.length + 1}`; openModal('saveModal'); }
@@ -1216,8 +1324,9 @@
                 const c = b.c + centerCol - Math.floor(size / 2);
                 state.beads[`${r},${c}`] = { color: b.color, shape: state.beadShape };
             });
-            render();
-            scheduleAutoSave();
+            state.needsRender = true;
+            scheduleRender();
+            markDirty();
             closePanel();
             toast(`${t.name} applied`);
         }
@@ -1544,13 +1653,14 @@
                 const x = (c - minC) * CELL + padding + ox + BEAD_SIZE / 2;
                 const y = (r - minR) * CELL + padding + BEAD_SIZE / 2;
 
-                ectx.save();
-                const fn = { round: drawRound, bicone: drawBicone, oval: drawOval, faceted: drawFaceted, cube: drawCube, teardrop: drawTeardrop }[b.shape || state.beadShape];
-                const origCtx = ctx;
-                window.ctx = ectx;
-                if (fn) fn(x, y, BEAD_SIZE / 2, b.color);
-                window.ctx = origCtx;
-                ectx.restore();
+                // Use cached sprite for export
+                const sprite = getSprite(b.color, b.shape || state.beadShape);
+                const scale = BEAD_SIZE / (SPRITE_SIZE - 4);
+                ectx.drawImage(sprite,
+                    x - BEAD_SIZE / 2 - 2 * scale,
+                    y - BEAD_SIZE / 2 - 2 * scale,
+                    SPRITE_SIZE * scale,
+                    SPRITE_SIZE * scale);
             });
 
             const a = document.createElement('a');
