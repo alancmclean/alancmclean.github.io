@@ -416,13 +416,10 @@ export function installCanvas(player, api) {
     }
     updateOverlay();
   }
-  tools.addEventListener("pointerdown", (e) => {
-    const handle = e.target.closest("[data-handle]");
-    if (!handle || !editing()) return;
+  function beginGesture(e, el, handle, body = false) {
     e.preventDefault();
     document.activeElement?.blur();
-    const el = element();
-    if (!el) return;
+    player.select(el.id);
     const f = currentFrame(el),
       p = framePixels(f, root()),
       cs = getComputedStyle(el);
@@ -445,7 +442,8 @@ export function installCanvas(player, api) {
         };
     gesture = {
       id: el.id,
-      handle: handle.dataset.handle,
+      handle,
+      body,
       frame: f,
       start: p,
       px: e.clientX,
@@ -456,12 +454,69 @@ export function installCanvas(player, api) {
       style,
       pointerId: e.pointerId,
     };
-    handle.setPointerCapture(e.pointerId);
+    // Capture on a stable container: the element is replaced on first preview.
+    (body ? player.main : tools).setPointerCapture(e.pointerId);
+  }
+  tools.addEventListener("pointerdown", (e) => {
+    const handle = e.target.closest("[data-handle]");
+    if (!handle || !editing() || e.button !== 0) return;
+    const el = element();
+    if (el) beginGesture(e, el, handle.dataset.handle);
   });
-  tools.addEventListener("pointermove", (e) => {
+  let suppressBodyClick = false;
+  player.main.addEventListener(
+    "pointerdown",
+    (e) => {
+      suppressBodyClick = false;
+      if (!editing() || !e.isPrimary || e.button !== 0 || gesture) return;
+      if (e.target.closest("input,textarea,select,[data-handle]")) return;
+      const el = e.target.closest("[data-element-id]");
+      if (!el || el === root() || !root().contains(el)) return;
+      // Once a caret is active, native selection wins. Blur or use the grip to move.
+      if (el.isContentEditable && document.activeElement === el) return;
+      beginGesture(e, el, "move", true);
+    },
+    true,
+  );
+  player.main.addEventListener("dragstart", (e) => {
+    if (editing() && gesture) e.preventDefault();
+  });
+  player.main.addEventListener(
+    "click",
+    (e) => {
+      if (!suppressBodyClick) return;
+      suppressBodyClick = false;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    },
+    true,
+  );
+  function focusAtPoint(el, x, y) {
+    el.focus({ preventScroll: true });
+    let range;
+    if (document.caretPositionFromPoint) {
+      const position = document.caretPositionFromPoint(x, y);
+      if (position && el.contains(position.offsetNode)) {
+        range = document.createRange();
+        range.setStart(position.offsetNode, position.offset);
+        range.collapse(true);
+      }
+    } else if (document.caretRangeFromPoint)
+      range = document.caretRangeFromPoint(x, y);
+    if (range && el.contains(range.startContainer)) {
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+  document.addEventListener("pointermove", (e) => {
     const g = gesture;
     if (!g || g.pointerId !== e.pointerId) return;
-    if (!g.moved && Math.hypot(e.clientX - g.px, e.clientY - g.py) < 2) return;
+    if (
+      !g.moved &&
+      Math.hypot(e.clientX - g.px, e.clientY - g.py) < (g.body ? 5 : 2)
+    )
+      return;
     let p = { ...g.start };
     if (g.handle === "move") {
       p.x += e.clientX - g.px;
@@ -515,9 +570,23 @@ export function installCanvas(player, api) {
     updateOverlay(f);
     drawGuides(f);
   });
-  tools.addEventListener("pointerup", () => stop());
-  tools.addEventListener("pointercancel", () => stop(true));
-  tools.addEventListener("lostpointercapture", () => stop(true));
+  document.addEventListener("pointerup", (e) => {
+    const g = gesture;
+    if (!g || e.pointerId !== g.pointerId) return;
+    if (g.body) suppressBodyClick = true;
+    stop();
+    if (g.body && !g.moved) {
+      const el = element();
+      if (el?.isContentEditable) focusAtPoint(el, e.clientX, e.clientY);
+    }
+  });
+  document.addEventListener("pointercancel", (e) => {
+    if (e.pointerId === gesture?.pointerId) stop(true);
+  });
+  for (const capture of [tools, player.main])
+    capture.addEventListener("lostpointercapture", (e) => {
+      if (e.pointerId === gesture?.pointerId) stop(true);
+    });
   tools.addEventListener("keydown", (e) => {
     const handle = e.target.dataset.handle;
     if (

@@ -4,7 +4,7 @@
   "scripts": {
     "test": "node --test tests/model.test.mjs tests/bridge.test.mjs tests/geometry.test.mjs",
     "dev": "node tools/editor-server.mjs",
-    "test:browser": "node tests/browser.cjs && node tests/editor-workflow.cjs && node tests/canvas.cjs",
+    "test:browser": "node tests/browser.cjs && node tests/editor-workflow.cjs && node tests/canvas.cjs && node tests/body-drag.cjs",
     "test:hosted-mobile": "node tests/hosted-mobile.cjs"
   },
   "devDependencies": {

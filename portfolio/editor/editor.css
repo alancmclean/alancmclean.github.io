@@ -503,3 +503,12 @@ body.editing.inspector-collapsed .scene {
     min-height: 30px;
   }
 }
+
+/* Body gestures resolve click versus movement before text receives a caret. */
+body.editing #main [data-element-id]:not(.scene) {
+  touch-action: none;
+}
+body.editing #main [data-element-type="image"] {
+  cursor: move;
+  -webkit-user-drag: none;
+}
