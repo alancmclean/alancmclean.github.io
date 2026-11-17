@@ -21,7 +21,7 @@ A plain static server also runs the player/editor (`python -m http.server 8000` 
 - Mobile: slide arrow buttons and state controls; horizontal swipes change state. Vertical movement remains scrolling.
 - Double-click the empty backdrop to edit. Double-clicking text, cards, links, or controls does not open editing. The visible **Edit** button is the touch/keyboard alternative.
 - In edit mode, click an element or select it in the left inspector. **Play draft** closes the inspector and restores product interactions.
-- The inspector supports slide/state naming, state duplication/deletion, offsets, scale, rotation offset, opacity, layer, width, font size, colors, alignment, visibility, animation preset/duration/delay, text, and links. Changes affect the selected state only. Position/rotation offsets compose with authored CSS.
+- The inspector supports slide/state naming, state duplication/deletion, offsets, scale, rotation offset, opacity, layer, width, font size, colors, visibility, animation preset/duration/delay, text, and links. Changes affect the selected state only. Position/rotation offsets compose with authored CSS.
 - Inputs, selects, textareas, contenteditable fields, dialogs, modifier shortcuts, and inspector controls keep normal keyboard behavior. Inactive slides are inert; state changes are announced; reduced motion disables element animations.
 
 The Docs example has four explicit states: context, refinement, accepted edit, and style. Existing tabs and accept/reset actions navigate the same states. Other slides start with one state; duplicate it to build additional interactions.
@@ -45,7 +45,7 @@ presentation (schemaVersion: 1, id, revision, title)
     states[] (id, label, overrides: elementId → properties)
 ```
 
-Reusable types are `group`, `text`, `link`, `button`, and `shape`, using allowlisted semantic tags/attributes and stable IDs. States override base properties; they cannot execute code. Buttons target named states and can declare which states count as active tabs.
+Reusable types are `group`, `text`, `link`, `button`, `shape`, and `image`, using allowlisted semantic tags/attributes and stable IDs. States override base properties; they cannot execute code. Buttons target named states and can declare which states count as active tabs.
 
 Shared `runtime/model.mjs` validation enforces types, bounds, existing targets, size/depth limits, safe links, and exact schema versions. HTML, JavaScript, arbitrary CSS, event attributes, unknown fields, and prototype keys are rejected. Future schema versions require explicit migrations; unsupported versions are preserved for recovery, never guessed at.
 
@@ -128,3 +128,15 @@ Public launch copy and personal-case placeholders are preserved. No contribution
 - Match writing style: https://www.youtube.com/watch?v=2UF3NYT2nLU
 
 No analytics added. Google Fonts remain optional with system fallbacks. `noindex` is not access control.
+
+## Direct canvas editing
+
+Click or tap text once for a normal caret. Select text and type; drag the separate **✥ grip** to move the whole element without fighting selection. Four corner handles resize; the **↻ handle** rotates. Keep proportions is on by default; **Shift toggles proportions** during a corner drag. The visible checkbox provides the same choice on touch. **Shift while rotating** constrains the angle to 15° steps. Focus a handle and use arrow keys for keyboard adjustments (Shift increases the step). Undo/redo is available in the inspector and with Cmd/Ctrl-Z outside text fields. Each pointer gesture is one undo step; native text undo remains available while typing.
+
+Tap **Inspector** to hide or reveal the sidebar while keeping canvas editing active. **Play draft** exits editing. Temporary alignment lines show proximity to slide edges/center or other elements only during a gesture. They do not snap or silently move objects.
+
+Drop raster images onto the slide at the desired point, or use **Add image** on touch. **Background** adds a separately configured image with cover/contain and horizontal/vertical position. Images & background in the inspector can hide an element in the current state, remove a background, or delete an added image across the slide's states with confirmation and undo.
+
+Only PNG, JPEG, and WebP are accepted; SVG, HEIC, remote URLs, and disguised files are rejected. Input is limited to 8 MB and 16 megapixels, re-encoded locally to at most 1280 px, with 600 KB encoded data per image, 12 assets, and a 1.5 MB total document budget. There are no uploads. Storage failures are reported; in-memory changes can be exported. Draft JSON includes embedded images, so export/import moves the complete draft. Review all images before an intentional public repository save.
+
+The additive schema-v1 fields are optional `assets`, image nodes with `assetId`, state `background`, and element `frame`. Frame centers use percentages of canvas width/height; both dimensions use canvas width so aspect ratio survives viewport changes. Natural dimensions preserve the content coordinate system. Freely placed authored elements leave inert flow placeholders to preserve the existing composition around them. Very different screen proportions can still require editorial adjustment; draft playback lets you review the result. Original published presentation data remains unchanged.
