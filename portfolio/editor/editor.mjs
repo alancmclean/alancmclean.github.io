@@ -1,4 +1,4 @@
-import { installCanvas } from "./canvas.mjs";
+import { installCanvas } from "./canvas.mjs?release=body-drag-20261117";
 import {
   applyPatch,
   contextFor,

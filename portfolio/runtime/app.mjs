@@ -10,7 +10,8 @@ try {
   const player = new Player(published, { editor });
   // The public player never reads draft storage or imports the editing module.
   if (editor) {
-    const { startEditor } = await import("../editor/editor.mjs");
+    const { startEditor } =
+      await import("../editor/editor.mjs?release=body-drag-20261117");
     await startEditor(player, published);
   }
 } catch (error) {
