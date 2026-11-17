@@ -1,6 +1,6 @@
 # Selected work — player and local studio
 
-The public player is `/portfolio/`; the editor is `/portfolio/editor/`. This implementation is on a review branch, **not deployed**. The homepage, CV, existing assets, CNAME, and Pages configuration are unchanged.
+The public player is `/portfolio/`; the editor is `/portfolio/editor/`. Changes are reviewed before publication to GitHub Pages. The homepage, CV, existing assets, CNAME, and Pages configuration are unchanged.
 
 ## Run locally
 
@@ -25,6 +25,14 @@ A plain static server also runs the player/editor (`python -m http.server 8000` 
 - Inputs, selects, textareas, contenteditable fields, dialogs, modifier shortcuts, and inspector controls keep normal keyboard behavior. Inactive slides are inert; state changes are announced; reduced motion disables element animations.
 
 The Docs example has four explicit states: context, refinement, accepted edit, and style. Existing tabs and accept/reset actions navigate the same states. Other slides start with one state; duplicate it to build additional interactions.
+
+## Use on a phone
+
+Open `/portfolio/editor/` directly, or tap **Edit** in the player. Select a slide, state, and element in the inspector; use **Play draft** to close it and interact with the slide. Touch arrow buttons navigate slides and states.
+
+Edits remain in this browser on this device and origin. They do not sync to another phone, browser, or computer, and clearing site data can remove them. Export draft JSON for a backup; import requires preview/apply. GitHub saves are disabled on hosted Pages because there is no authenticated server. Prompt edits use context export and patch import; live MCP is not connected.
+
+The hosted-mobile suite runs against a plain static server, including a browser without `crypto.randomUUID`. It uses Chromium mobile/touch emulation, not physical iPhone Safari.
 
 ## Data contract
 

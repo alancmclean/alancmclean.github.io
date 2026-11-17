@@ -375,7 +375,11 @@ export async function startEditor(player, published) {
     const copy = structuredClone(doc),
       slide = copy.slides[player.index],
       state = structuredClone(slide.states[player.stateIndex]);
-    state.id = "state-" + crypto.randomUUID().slice(0, 8);
+    state.id =
+      "state-" +
+      Array.from(crypto.getRandomValues(new Uint32Array(2)), (part) =>
+        part.toString(16).padStart(8, "0"),
+      ).join("");
     state.label += " copy";
     slide.states.push(state);
     copy.revision++;
