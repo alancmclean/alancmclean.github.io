@@ -1,0 +1,2037 @@
+{
+  "schemaVersion": 1,
+  "id": "alan-selected-work",
+  "revision": 1,
+  "title": "Alan McLean — Selected work",
+  "slides": [
+    {
+      "id": "intro",
+      "title": "Introduction",
+      "root": {
+        "id": "intro",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene active",
+          "aria-labelledby": "intro-title"
+        },
+        "children": [
+          {
+            "id": "intro-div-2",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "intro-copy"
+            },
+            "children": [
+              {
+                "id": "intro-p-3",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Design, in a changing world"
+              },
+              {
+                "id": "intro-title",
+                "type": "group",
+                "tag": "h1",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "intro-text-5",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Making room",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "intro-br-6",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "intro-text-7",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "for what’s ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "intro-em-8",
+                    "type": "text",
+                    "tag": "em",
+                    "attrs": {},
+                    "text": "next."
+                  }
+                ]
+              },
+              {
+                "id": "intro-p-9",
+                "type": "group",
+                "tag": "p",
+                "attrs": {
+                  "class": "intro"
+                },
+                "children": [
+                  {
+                    "id": "intro-text-10",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "I’m Alan McLean, a designer at Google DeepMind.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "intro-br-11",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "intro-text-12",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Working on Gemini. Previously, leading GenAI design for Google Docs.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "intro-a-13",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "class": "pill",
+                  "href": "#docs"
+                },
+                "children": [
+                  {
+                    "id": "intro-text-14",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Explore selected work ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "intro-span-15",
+                    "type": "group",
+                    "tag": "span",
+                    "attrs": {
+                      "aria-hidden": "true"
+                    },
+                    "children": [
+                      {
+                        "id": "intro-span-16",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "external-arrow",
+                          "aria-hidden": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "intro-div-17",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "horizon-note"
+            },
+            "children": [
+              {
+                "id": "intro-span-18",
+                "type": "group",
+                "tag": "span",
+                "attrs": {
+                  "class": "small-line"
+                },
+                "children": []
+              },
+              {
+                "id": "intro-text-19",
+                "type": "text",
+                "tag": "span",
+                "text": " A few things worth looking at closely.",
+                "attrs": {
+                  "class": "text-run"
+                }
+              }
+            ]
+          },
+          {
+            "id": "intro-div-20",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "hero-caption"
+            },
+            "children": [
+              {
+                "id": "intro-text-21",
+                "type": "text",
+                "tag": "span",
+                "text": "Alan McLean",
+                "attrs": {
+                  "class": "text-run"
+                }
+              },
+              {
+                "id": "intro-br-22",
+                "type": "shape",
+                "tag": "br",
+                "attrs": {},
+                "children": []
+              },
+              {
+                "id": "intro-text-23",
+                "type": "text",
+                "tag": "span",
+                "text": "Portfolio / November 2026",
+                "attrs": {
+                  "class": "text-run"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "base",
+          "label": "Opening",
+          "overrides": {}
+        }
+      ]
+    },
+    {
+      "id": "docs",
+      "title": "Google Docs",
+      "root": {
+        "id": "docs",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene",
+          "aria-labelledby": "docs-title"
+        },
+        "children": [
+          {
+            "id": "docs-div-25",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "split"
+            },
+            "children": [
+              {
+                "id": "docs-div-26",
+                "type": "group",
+                "tag": "div",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "docs-p-27",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {
+                      "class": "eyebrow"
+                    },
+                    "text": "Case study 01 / Google Docs"
+                  },
+                  {
+                    "id": "docs-title",
+                    "type": "group",
+                    "tag": "h2",
+                    "attrs": {},
+                    "children": [
+                      {
+                        "id": "docs-text-29",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "From a blank page",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "docs-br-30",
+                        "type": "shape",
+                        "tag": "br",
+                        "attrs": {},
+                        "children": []
+                      },
+                      {
+                        "id": "docs-text-31",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "to a ",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "docs-em-32",
+                        "type": "text",
+                        "tag": "em",
+                        "attrs": {},
+                        "text": "collaborator."
+                      }
+                    ]
+                  },
+                  {
+                    "id": "docs-p-33",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {
+                      "class": "lede"
+                    },
+                    "text": "Adding agentic capabilities to a familiar place to think, write, and work together."
+                  },
+                  {
+                    "id": "docs-p-34",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {
+                      "class": "body-copy"
+                    },
+                    "text": "The 2026 Gemini in Docs launch brings context-aware drafting, document editing, and style matching into the writing experience."
+                  },
+                  {
+                    "id": "docs-a-35",
+                    "type": "link",
+                    "tag": "a",
+                    "attrs": {
+                      "class": "text-link",
+                      "href": "#experience"
+                    },
+                    "children": [
+                      {
+                        "id": "docs-text-36",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "Explore the experience ",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "docs-span-37",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {
+                          "aria-hidden": "true"
+                        },
+                        "text": "→"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "docs-div-38",
+                "type": "group",
+                "tag": "div",
+                "attrs": {
+                  "class": "concept-document",
+                  "aria-label": "Conceptual illustration of a document becoming a draft"
+                },
+                "children": [
+                  {
+                    "id": "docs-div-39",
+                    "type": "group",
+                    "tag": "div",
+                    "attrs": {
+                      "class": "document-top"
+                    },
+                    "children": [
+                      {
+                        "id": "docs-span-40",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "doc-icon",
+                          "aria-hidden": "true"
+                        },
+                        "text": "≡"
+                      },
+                      {
+                        "id": "docs-span-41",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {},
+                        "text": "Untitled document"
+                      },
+                      {
+                        "id": "docs-span-42",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "doc-dot"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": "docs-div-43",
+                    "type": "group",
+                    "tag": "div",
+                    "attrs": {
+                      "class": "paper"
+                    },
+                    "children": [
+                      {
+                        "id": "docs-span-44",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "paper-kicker"
+                        },
+                        "text": "A starting point"
+                      },
+                      {
+                        "id": "docs-h3-45",
+                        "type": "group",
+                        "tag": "h3",
+                        "attrs": {},
+                        "children": [
+                          {
+                            "id": "docs-text-46",
+                            "type": "text",
+                            "tag": "span",
+                            "text": "Every idea begins",
+                            "attrs": {
+                              "class": "text-run"
+                            }
+                          },
+                          {
+                            "id": "docs-br-47",
+                            "type": "shape",
+                            "tag": "br",
+                            "attrs": {},
+                            "children": []
+                          },
+                          {
+                            "id": "docs-text-48",
+                            "type": "text",
+                            "tag": "span",
+                            "text": "with a little context.",
+                            "attrs": {
+                              "class": "text-run"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "docs-div-49",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {
+                          "class": "paper-lines"
+                        },
+                        "children": [
+                          {
+                            "id": "docs-i-50",
+                            "type": "shape",
+                            "tag": "i",
+                            "attrs": {},
+                            "children": []
+                          },
+                          {
+                            "id": "docs-i-51",
+                            "type": "shape",
+                            "tag": "i",
+                            "attrs": {},
+                            "children": []
+                          },
+                          {
+                            "id": "docs-i-52",
+                            "type": "shape",
+                            "tag": "i",
+                            "attrs": {},
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "docs-div-53",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {
+                          "class": "context-tags"
+                        },
+                        "children": [
+                          {
+                            "id": "docs-span-54",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {},
+                            "text": "Files"
+                          },
+                          {
+                            "id": "docs-span-55",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {},
+                            "text": "Email"
+                          },
+                          {
+                            "id": "docs-span-56",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {},
+                            "text": "Chat"
+                          },
+                          {
+                            "id": "docs-span-57",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {},
+                            "text": "Web"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "docs-div-58",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {
+                          "class": "prompt"
+                        },
+                        "children": [
+                          {
+                            "id": "docs-span-59",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "aria-hidden": "true"
+                            },
+                            "text": "✳"
+                          },
+                          {
+                            "id": "docs-text-60",
+                            "type": "text",
+                            "tag": "span",
+                            "text": " Help me turn these ideas into a first draft.",
+                            "attrs": {
+                              "class": "text-run"
+                            }
+                          },
+                          {
+                            "id": "docs-span-61",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "aria-hidden": "true"
+                            },
+                            "text": "↑"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "docs-p-62",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {
+                      "class": "caption"
+                    },
+                    "text": "Conceptual illustration · Not a Google product screenshot"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "docs-div-63",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "section-foot"
+            },
+            "children": [
+              {
+                "id": "docs-span-64",
+                "type": "text",
+                "tag": "span",
+                "attrs": {},
+                "text": "Public launch overview"
+              },
+              {
+                "id": "docs-span-65",
+                "type": "text",
+                "tag": "span",
+                "attrs": {},
+                "text": "March 10 announcement → April 22 rollout"
+              }
+            ]
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "base",
+          "label": "Opening",
+          "overrides": {}
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "title": "The experience",
+      "root": {
+        "id": "experience",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene",
+          "aria-labelledby": "experience-title"
+        },
+        "children": [
+          {
+            "id": "experience-div-67",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "experience-heading"
+            },
+            "children": [
+              {
+                "id": "experience-p-68",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Case study 01 / The experience"
+              },
+              {
+                "id": "experience-title",
+                "type": "group",
+                "tag": "h2",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "experience-text-70",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "A thought, ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "experience-em-71",
+                    "type": "text",
+                    "tag": "em",
+                    "attrs": {},
+                    "text": "taking shape."
+                  }
+                ]
+              },
+              {
+                "id": "experience-p-72",
+                "type": "text",
+                "tag": "p",
+                "attrs": {},
+                "text": "Explore three moments in the public launch."
+              }
+            ]
+          },
+          {
+            "id": "experience-div-73",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "explorer"
+            },
+            "children": [
+              {
+                "id": "experience-div-74",
+                "type": "group",
+                "tag": "div",
+                "attrs": {
+                  "class": "steps",
+                  "role": "tablist",
+                  "aria-label": "Docs capabilities"
+                },
+                "children": [
+                  {
+                    "id": "tab-create",
+                    "type": "button",
+                    "tag": "button",
+                    "attrs": {
+                      "role": "tab",
+                      "aria-selected": "true",
+                      "aria-controls": "capability-panel",
+                      "data-step": "0"
+                    },
+                    "children": [
+                      {
+                        "id": "experience-span-76",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {},
+                        "text": "01"
+                      },
+                      {
+                        "id": "experience-strong-77",
+                        "type": "text",
+                        "tag": "strong",
+                        "attrs": {},
+                        "text": "Start with context"
+                      },
+                      {
+                        "id": "experience-small-78",
+                        "type": "text",
+                        "tag": "small",
+                        "attrs": {},
+                        "text": "From scattered sources to a first draft"
+                      }
+                    ],
+                    "action": {
+                      "type": "state",
+                      "target": "context"
+                    }
+                  },
+                  {
+                    "id": "tab-refine",
+                    "type": "button",
+                    "tag": "button",
+                    "attrs": {
+                      "role": "tab",
+                      "aria-selected": "false",
+                      "aria-controls": "capability-panel",
+                      "tabindex": "-1",
+                      "data-step": "1"
+                    },
+                    "children": [
+                      {
+                        "id": "experience-span-80",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {},
+                        "text": "02"
+                      },
+                      {
+                        "id": "experience-strong-81",
+                        "type": "text",
+                        "tag": "strong",
+                        "attrs": {},
+                        "text": "Refine in place"
+                      },
+                      {
+                        "id": "experience-small-82",
+                        "type": "text",
+                        "tag": "small",
+                        "attrs": {},
+                        "text": "Suggested edits, with approval"
+                      }
+                    ],
+                    "action": {
+                      "type": "state",
+                      "target": "refine",
+                      "activeStates": [
+                        "refine",
+                        "accepted"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "tab-style",
+                    "type": "button",
+                    "tag": "button",
+                    "attrs": {
+                      "role": "tab",
+                      "aria-selected": "false",
+                      "aria-controls": "capability-panel",
+                      "tabindex": "-1",
+                      "data-step": "2"
+                    },
+                    "children": [
+                      {
+                        "id": "experience-span-84",
+                        "type": "text",
+                        "tag": "span",
+                        "attrs": {},
+                        "text": "03"
+                      },
+                      {
+                        "id": "experience-strong-85",
+                        "type": "text",
+                        "tag": "strong",
+                        "attrs": {},
+                        "text": "Bring it together"
+                      },
+                      {
+                        "id": "experience-small-86",
+                        "type": "text",
+                        "tag": "small",
+                        "attrs": {},
+                        "text": "A consistent voice and format"
+                      }
+                    ],
+                    "action": {
+                      "type": "state",
+                      "target": "style"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "capability-panel",
+                "type": "group",
+                "tag": "div",
+                "attrs": {
+                  "role": "tabpanel",
+                  "aria-labelledby": "tab-create",
+                  "tabindex": "0"
+                },
+                "children": [
+                  {
+                    "id": "demo",
+                    "type": "group",
+                    "tag": "div",
+                    "attrs": {
+                      "class": "demo",
+                      "aria-label": "Illustrative capability walkthrough"
+                    },
+                    "children": [
+                      {
+                        "id": "demo-0",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {},
+                        "children": [
+                          {
+                            "id": "demo-0-span-181",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "micro"
+                            },
+                            "text": "Illustration / Context → draft"
+                          },
+                          {
+                            "id": "demo-0-h3-182",
+                            "type": "group",
+                            "tag": "h3",
+                            "attrs": {},
+                            "children": [
+                              {
+                                "id": "demo-0-text-183",
+                                "type": "text",
+                                "tag": "span",
+                                "text": "A starting point,",
+                                "attrs": {
+                                  "class": "text-run"
+                                }
+                              },
+                              {
+                                "id": "demo-0-br-184",
+                                "type": "shape",
+                                "tag": "br",
+                                "attrs": {},
+                                "children": []
+                              },
+                              {
+                                "id": "demo-0-text-185",
+                                "type": "text",
+                                "tag": "span",
+                                "text": "already connected.",
+                                "attrs": {
+                                  "class": "text-run"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "demo-0-p-186",
+                            "type": "text",
+                            "tag": "p",
+                            "attrs": {},
+                            "text": "Turn a brief and relevant source material into a structured document."
+                          },
+                          {
+                            "id": "demo-0-div-187",
+                            "type": "group",
+                            "tag": "div",
+                            "attrs": {
+                              "class": "tokens"
+                            },
+                            "children": [
+                              {
+                                "id": "demo-0-span-188",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Drive"
+                              },
+                              {
+                                "id": "demo-0-span-189",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Gmail"
+                              },
+                              {
+                                "id": "demo-0-span-190",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Chat"
+                              },
+                              {
+                                "id": "demo-0-span-191",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Web"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "demo-1",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {},
+                        "children": [
+                          {
+                            "id": "demo-1-span-193",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "micro"
+                            },
+                            "text": "Illustration / Private suggestion"
+                          },
+                          {
+                            "id": "demo-1-h3-194",
+                            "type": "text",
+                            "tag": "h3",
+                            "attrs": {},
+                            "text": "A clearer way to say it."
+                          },
+                          {
+                            "id": "sample-edit",
+                            "type": "group",
+                            "tag": "p",
+                            "attrs": {},
+                            "children": [
+                              {
+                                "id": "edit-mark",
+                                "type": "text",
+                                "tag": "mark",
+                                "attrs": {},
+                                "text": "Bring the team’s ideas into one clear plan."
+                              }
+                            ]
+                          },
+                          {
+                            "id": "approve",
+                            "type": "button",
+                            "tag": "button",
+                            "attrs": {
+                              "class": "demo-action"
+                            },
+                            "children": [
+                              {
+                                "id": "demo-1-text-198",
+                                "type": "text",
+                                "tag": "span",
+                                "text": "Accept illustrative edit",
+                                "attrs": {
+                                  "class": "text-run"
+                                }
+                              }
+                            ],
+                            "action": {
+                              "type": "state",
+                              "target": "accepted"
+                            }
+                          },
+                          {
+                            "id": "approval-status",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "approval",
+                              "role": "status"
+                            },
+                            "text": "Only visible to you until approved"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "demo-2",
+                        "type": "group",
+                        "tag": "div",
+                        "attrs": {},
+                        "children": [
+                          {
+                            "id": "demo-2-span-201",
+                            "type": "text",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "micro"
+                            },
+                            "text": "Illustration / Style & structure"
+                          },
+                          {
+                            "id": "demo-2-h3-202",
+                            "type": "group",
+                            "tag": "h3",
+                            "attrs": {},
+                            "children": [
+                              {
+                                "id": "demo-2-text-203",
+                                "type": "text",
+                                "tag": "span",
+                                "text": "A shared voice.",
+                                "attrs": {
+                                  "class": "text-run"
+                                }
+                              },
+                              {
+                                "id": "demo-2-br-204",
+                                "type": "shape",
+                                "tag": "br",
+                                "attrs": {},
+                                "children": []
+                              },
+                              {
+                                "id": "demo-2-text-205",
+                                "type": "text",
+                                "tag": "span",
+                                "text": "A familiar form.",
+                                "attrs": {
+                                  "class": "text-run"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "demo-2-div-206",
+                            "type": "group",
+                            "tag": "div",
+                            "attrs": {
+                              "class": "tokens"
+                            },
+                            "children": [
+                              {
+                                "id": "demo-2-span-207",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Consistent tone"
+                              },
+                              {
+                                "id": "demo-2-span-208",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Headings"
+                              },
+                              {
+                                "id": "demo-2-span-209",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Fonts & colors"
+                              },
+                              {
+                                "id": "demo-2-span-210",
+                                "type": "text",
+                                "tag": "span",
+                                "attrs": {},
+                                "text": "Table columns"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "experience-div-89",
+                    "type": "group",
+                    "tag": "div",
+                    "attrs": {
+                      "class": "capability-copy"
+                    },
+                    "children": [
+                      {
+                        "id": "capability-title",
+                        "type": "text",
+                        "tag": "h3",
+                        "attrs": {},
+                        "text": ""
+                      },
+                      {
+                        "id": "capability-description",
+                        "type": "text",
+                        "tag": "p",
+                        "attrs": {},
+                        "text": ""
+                      },
+                      {
+                        "id": "capability-source",
+                        "type": "link",
+                        "tag": "a",
+                        "attrs": {
+                          "target": "_blank",
+                          "rel": "noopener noreferrer",
+                          "href": "https://workspaceupdates.googleblog.com/2026/04/new-gemini-capabilities-in-google-docs-help-you-go-from-blank-page-to-brilliance.html"
+                        },
+                        "children": [
+                          {
+                            "id": "experience-text-93",
+                            "type": "text",
+                            "tag": "span",
+                            "text": "Read the official announcement ",
+                            "attrs": {
+                              "class": "text-run"
+                            }
+                          },
+                          {
+                            "id": "experience-span-94",
+                            "type": "group",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "external-arrow",
+                              "aria-hidden": "true"
+                            },
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "capability-video",
+                        "type": "link",
+                        "tag": "a",
+                        "attrs": {
+                          "class": "video-link",
+                          "target": "_blank",
+                          "rel": "noopener noreferrer",
+                          "href": "https://www.youtube.com/watch?v=5G8KoU0Sjh0"
+                        },
+                        "children": [
+                          {
+                            "id": "experience-text-96",
+                            "type": "text",
+                            "tag": "span",
+                            "text": "Watch Google’s demo ",
+                            "attrs": {
+                              "class": "text-run"
+                            }
+                          },
+                          {
+                            "id": "experience-span-97",
+                            "type": "group",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "external-arrow",
+                              "aria-hidden": "true"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "experience-p-98",
+            "type": "text",
+            "tag": "p",
+            "attrs": {
+              "class": "caption"
+            },
+            "text": "Interactive interpretation of public capabilities. Illustrative content; not a live product demo."
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "context",
+          "label": "Start with context",
+          "overrides": {
+            "demo-0": {
+              "visible": true
+            },
+            "demo-1": {
+              "visible": false
+            },
+            "demo-2": {
+              "visible": false
+            },
+            "capability-title": {
+              "text": "A draft grounded in context."
+            },
+            "capability-description": {
+              "text": "Help me create synthesizes information from files, email, chat, and the web into a formatted first draft."
+            },
+            "capability-video": {
+              "href": "https://www.youtube.com/watch?v=5G8KoU0Sjh0"
+            }
+          }
+        },
+        {
+          "id": "refine",
+          "label": "Refine in place",
+          "overrides": {
+            "demo-0": {
+              "visible": false
+            },
+            "demo-1": {
+              "visible": true
+            },
+            "demo-2": {
+              "visible": false
+            },
+            "capability-title": {
+              "text": "The writer stays in control."
+            },
+            "capability-description": {
+              "text": "Prompt from the bottom bar or side panel, or select text for a focused edit. Suggested changes remain private until approved."
+            },
+            "capability-video": {
+              "href": "https://www.youtube.com/watch?v=-PlUaej62Sg"
+            }
+          }
+        },
+        {
+          "id": "accepted",
+          "label": "Edit accepted",
+          "overrides": {
+            "demo-0": {
+              "visible": false
+            },
+            "demo-1": {
+              "visible": true
+            },
+            "demo-2": {
+              "visible": false
+            },
+            "capability-title": {
+              "text": "The writer stays in control."
+            },
+            "capability-description": {
+              "text": "Prompt from the bottom bar or side panel, or select text for a focused edit. Suggested changes remain private until approved."
+            },
+            "capability-video": {
+              "href": "https://www.youtube.com/watch?v=-PlUaej62Sg"
+            },
+            "edit-mark": {
+              "backgroundColor": "transparent"
+            },
+            "approve": {
+              "stateTarget": "refine"
+            },
+            "demo-1-text-198": {
+              "text": "Reset illustration"
+            },
+            "approval-status": {
+              "text": "Illustrative edit accepted · This demo does not change a real document"
+            }
+          }
+        },
+        {
+          "id": "style",
+          "label": "Bring it together",
+          "overrides": {
+            "demo-0": {
+              "visible": false
+            },
+            "demo-1": {
+              "visible": false
+            },
+            "demo-2": {
+              "visible": true
+            },
+            "capability-title": {
+              "text": "One document. A coherent whole."
+            },
+            "capability-description": {
+              "text": "Match writing style aligns tone across a document. Match doc format mirrors a source document’s formatting and structure."
+            },
+            "capability-video": {
+              "href": "https://www.youtube.com/watch?v=2UF3NYT2nLU"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "perspective",
+      "title": "Behind the work",
+      "root": {
+        "id": "perspective",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene",
+          "aria-labelledby": "perspective-title"
+        },
+        "children": [
+          {
+            "id": "perspective-div-100",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "perspective-head"
+            },
+            "children": [
+              {
+                "id": "perspective-p-101",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Case study 01 / Behind the work"
+              },
+              {
+                "id": "perspective-title",
+                "type": "group",
+                "tag": "h2",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "perspective-text-103",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "The product is public.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "perspective-br-104",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "perspective-text-105",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "The story is ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "perspective-em-106",
+                    "type": "text",
+                    "tag": "em",
+                    "attrs": {},
+                    "text": "personal."
+                  }
+                ]
+              },
+              {
+                "id": "perspective-p-107",
+                "type": "group",
+                "tag": "p",
+                "attrs": {
+                  "class": "lede"
+                },
+                "children": [
+                  {
+                    "id": "perspective-text-108",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "A space for the decisions, the tradeoffs,",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "perspective-br-109",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "perspective-text-110",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "and the work behind the experience.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "perspective-div-111",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "notes"
+            },
+            "children": [
+              {
+                "id": "perspective-div-112",
+                "type": "group",
+                "tag": "div",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "perspective-span-113",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "01 / Role & collaboration"
+                  },
+                  {
+                    "id": "perspective-h3-114",
+                    "type": "text",
+                    "tag": "h3",
+                    "attrs": {},
+                    "text": "Where I contributed"
+                  },
+                  {
+                    "id": "perspective-p-115",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {},
+                    "text": "Alan’s account of his scope, collaborators, and individual contributions will be added here."
+                  }
+                ]
+              },
+              {
+                "id": "perspective-div-116",
+                "type": "group",
+                "tag": "div",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "perspective-span-117",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "02 / Design decisions"
+                  },
+                  {
+                    "id": "perspective-h3-118",
+                    "type": "text",
+                    "tag": "h3",
+                    "attrs": {},
+                    "text": "What shaped the experience"
+                  },
+                  {
+                    "id": "perspective-p-119",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {},
+                    "text": "Selected explorations and the reasoning behind key decisions, to be provided by Alan."
+                  }
+                ]
+              },
+              {
+                "id": "perspective-div-120",
+                "type": "group",
+                "tag": "div",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "perspective-span-121",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "03 / Reflection"
+                  },
+                  {
+                    "id": "perspective-h3-122",
+                    "type": "text",
+                    "tag": "h3",
+                    "attrs": {},
+                    "text": "What I learned"
+                  },
+                  {
+                    "id": "perspective-p-123",
+                    "type": "text",
+                    "tag": "p",
+                    "attrs": {},
+                    "text": "Outcomes, evidence, and personal reflections will complete this case study."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "perspective-p-124",
+            "type": "group",
+            "tag": "p",
+            "attrs": {
+              "class": "draft-note"
+            },
+            "children": [
+              {
+                "id": "perspective-span-125",
+                "type": "text",
+                "tag": "span",
+                "attrs": {
+                  "aria-hidden": "true"
+                },
+                "text": "○"
+              },
+              {
+                "id": "perspective-text-126",
+                "type": "text",
+                "tag": "span",
+                "text": " In preparation · The preceding overview documents the launch, not individual authorship.",
+                "attrs": {
+                  "class": "text-run"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "base",
+          "label": "Opening",
+          "overrides": {}
+        }
+      ]
+    },
+    {
+      "id": "next",
+      "title": "Case study two",
+      "root": {
+        "id": "next",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene",
+          "aria-labelledby": "next-title"
+        },
+        "children": [
+          {
+            "id": "next-div-128",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "next-orbit",
+              "aria-hidden": "true"
+            },
+            "children": [
+              {
+                "id": "next-span-129",
+                "type": "text",
+                "tag": "span",
+                "attrs": {},
+                "text": "02"
+              }
+            ]
+          },
+          {
+            "id": "next-div-130",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "next-copy"
+            },
+            "children": [
+              {
+                "id": "next-p-131",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Case study 02"
+              },
+              {
+                "id": "next-title",
+                "type": "group",
+                "tag": "h2",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "next-text-133",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Another story.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "next-br-134",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "next-em-135",
+                    "type": "text",
+                    "tag": "em",
+                    "attrs": {},
+                    "text": "Space reserved."
+                  }
+                ]
+              },
+              {
+                "id": "next-p-136",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "lede"
+                },
+                "text": "A second piece of work will live here."
+              },
+              {
+                "id": "next-p-137",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "body-copy"
+                },
+                "text": "Selected project and details to follow."
+              },
+              {
+                "id": "next-span-138",
+                "type": "group",
+                "tag": "span",
+                "attrs": {
+                  "class": "status"
+                },
+                "children": [
+                  {
+                    "id": "next-i-139",
+                    "type": "shape",
+                    "tag": "i",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "next-text-140",
+                    "type": "text",
+                    "tag": "span",
+                    "text": " In preparation",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "base",
+          "label": "Opening",
+          "overrides": {}
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "title": "Continue the conversation",
+      "root": {
+        "id": "close",
+        "type": "group",
+        "tag": "section",
+        "attrs": {
+          "class": "scene",
+          "aria-labelledby": "close-title"
+        },
+        "children": [
+          {
+            "id": "close-div-142",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "closing"
+            },
+            "children": [
+              {
+                "id": "close-p-143",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Thank you for taking a closer look"
+              },
+              {
+                "id": "close-title",
+                "type": "group",
+                "tag": "h2",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "close-text-145",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Good work begins",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-br-146",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "close-text-147",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "with a ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-em-148",
+                    "type": "text",
+                    "tag": "em",
+                    "attrs": {},
+                    "text": "conversation."
+                  }
+                ]
+              },
+              {
+                "id": "close-a-149",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "class": "pill",
+                  "href": "https://www.linkedin.com/in/mcleanalan/",
+                  "target": "_blank",
+                  "rel": "noopener noreferrer"
+                },
+                "children": [
+                  {
+                    "id": "close-text-150",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Connect with Alan ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-span-151",
+                    "type": "group",
+                    "tag": "span",
+                    "attrs": {
+                      "aria-hidden": "true"
+                    },
+                    "children": [
+                      {
+                        "id": "close-span-152",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "external-arrow",
+                          "aria-hidden": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "close-a-153",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "class": "text-link return",
+                  "href": "/"
+                },
+                "children": [
+                  {
+                    "id": "close-text-154",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Visit my public site ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-span-155",
+                    "type": "group",
+                    "tag": "span",
+                    "attrs": {
+                      "class": "external-arrow",
+                      "aria-hidden": "true"
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "close-div-156",
+            "type": "group",
+            "tag": "div",
+            "attrs": {
+              "class": "sources"
+            },
+            "children": [
+              {
+                "id": "close-p-157",
+                "type": "text",
+                "tag": "p",
+                "attrs": {
+                  "class": "eyebrow"
+                },
+                "text": "Public source material"
+              },
+              {
+                "id": "close-a-158",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "href": "https://workspaceupdates.googleblog.com/2026/04/new-gemini-capabilities-in-google-docs-help-you-go-from-blank-page-to-brilliance.html",
+                  "target": "_blank",
+                  "rel": "noopener noreferrer"
+                },
+                "children": [
+                  {
+                    "id": "close-span-159",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "01"
+                  },
+                  {
+                    "id": "close-text-160",
+                    "type": "text",
+                    "tag": "span",
+                    "text": " Google Docs launch ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-small-161",
+                    "type": "group",
+                    "tag": "small",
+                    "attrs": {},
+                    "children": [
+                      {
+                        "id": "close-text-162",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "April 22, 2026 ",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "close-span-163",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "external-arrow",
+                          "aria-hidden": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "close-a-164",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "href": "https://workspace.google.com/blog/product-announcements/reimagining-content-creation",
+                  "target": "_blank",
+                  "rel": "noopener noreferrer"
+                },
+                "children": [
+                  {
+                    "id": "close-span-165",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "02"
+                  },
+                  {
+                    "id": "close-text-166",
+                    "type": "text",
+                    "tag": "span",
+                    "text": " Reimagining content creation ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-small-167",
+                    "type": "group",
+                    "tag": "small",
+                    "attrs": {},
+                    "children": [
+                      {
+                        "id": "close-text-168",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "March 10, 2026 ",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "close-span-169",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "external-arrow",
+                          "aria-hidden": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "close-a-170",
+                "type": "link",
+                "tag": "a",
+                "attrs": {
+                  "href": "https://www.youtube.com/watch?v=8wtKHwlKMBQ&t=75s",
+                  "target": "_blank",
+                  "rel": "noopener noreferrer"
+                },
+                "children": [
+                  {
+                    "id": "close-span-171",
+                    "type": "text",
+                    "tag": "span",
+                    "attrs": {},
+                    "text": "03"
+                  },
+                  {
+                    "id": "close-text-172",
+                    "type": "text",
+                    "tag": "span",
+                    "text": " Official launch film ",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-small-173",
+                    "type": "group",
+                    "tag": "small",
+                    "attrs": {},
+                    "children": [
+                      {
+                        "id": "close-text-174",
+                        "type": "text",
+                        "tag": "span",
+                        "text": "Docs at 1:15 ",
+                        "attrs": {
+                          "class": "text-run"
+                        }
+                      },
+                      {
+                        "id": "close-span-175",
+                        "type": "group",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "external-arrow",
+                          "aria-hidden": "true"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "close-p-176",
+                "type": "group",
+                "tag": "p",
+                "attrs": {},
+                "children": [
+                  {
+                    "id": "close-text-177",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Product facts are drawn from Google’s public announcements.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  },
+                  {
+                    "id": "close-br-178",
+                    "type": "shape",
+                    "tag": "br",
+                    "attrs": {},
+                    "children": []
+                  },
+                  {
+                    "id": "close-text-179",
+                    "type": "text",
+                    "tag": "span",
+                    "text": "Personal case-study details are still in preparation.",
+                    "attrs": {
+                      "class": "text-run"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "states": [
+        {
+          "id": "base",
+          "label": "Opening",
+          "overrides": {}
+        }
+      ]
+    }
+  ]
+}
