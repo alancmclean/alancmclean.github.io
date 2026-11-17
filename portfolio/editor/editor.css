@@ -1,0 +1,299 @@
+:root {
+  --inspector-width: 320px;
+}
+body.editing #main {
+  margin-left: var(--inspector-width);
+  width: calc(100% - var(--inspector-width));
+}
+body.editing header,
+body.editing footer {
+  left: calc(var(--inspector-width) + 28px);
+  right: 28px;
+}
+body.editing #state-controls {
+  left: calc(50% + var(--inspector-width) / 2);
+}
+body.editing .scene {
+  left: 4vw;
+  right: 4vw;
+}
+body.editing .split {
+  gap: 3vw;
+}
+body.editing .horizon-note {
+  display: none;
+}
+body.editing h1 {
+  font-size: clamp(40px, 5.3vw, 82px);
+}
+body.editing h2 {
+  font-size: clamp(34px, 3.5vw, 58px);
+}
+body.editing .hero-caption {
+  font-size: 10px;
+}
+body.editing .keyboard-hint {
+  display: none;
+}
+body.editing .scene * {
+  cursor: crosshair;
+}
+body.editing #main .element-selected {
+  outline: 2px solid #dfc58e;
+  outline-offset: 4px;
+}
+#inspector {
+  position: fixed;
+  z-index: 40;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--inspector-width);
+  overflow: auto;
+  background: #101e1d;
+  color: #e9eee6;
+  border-right: 1px solid #d2e2ce33;
+  padding: 22px 18px;
+  font:
+    12px/1.5 "DM Sans",
+    Arial,
+    sans-serif;
+  box-shadow: 12px 0 45px #0002;
+  scrollbar-width: thin;
+}
+#inspector * {
+  box-sizing: border-box;
+}
+#inspector h2 {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin: 4px 0;
+  font-weight: 400;
+}
+#inspector .inspector-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#close-editor {
+  font-size: 25px !important;
+  padding: 3px 10px !important;
+}
+.editor-kicker {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #b5c7bc;
+}
+.editor-note {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #b6c5bc;
+  margin: 14px 0;
+}
+.connection-label {
+  font-size: 11px;
+  color: #e0ca9d;
+}
+#inspector button {
+  background: #d6e2d40d;
+  border: 1px solid #c4d5c438;
+  border-radius: 5px;
+  padding: 8px 10px;
+  font: 11px/1.4 inherit;
+  min-height: 34px;
+}
+#inspector button:hover:not(:disabled) {
+  background: #d6e2d41c;
+}
+#inspector button:disabled {
+  opacity: 0.4;
+}
+#inspector label {
+  display: block;
+  font-size: 11px;
+  color: #c5d1c9;
+  margin: 12px 0 5px;
+}
+#inspector input:not([type="checkbox"]),
+#inspector select,
+#inspector textarea {
+  display: block;
+  background: #0a1514;
+  border: 1px solid #b8cbb43d;
+  color: #e9eee6;
+  border-radius: 4px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  font:
+    12px/1.5 "DM Sans",
+    Arial,
+    sans-serif;
+  min-width: 0;
+}
+#inspector textarea {
+  resize: vertical;
+}
+#inspector details {
+  border-top: 1px solid #c3d2bc2b;
+  margin-top: 18px;
+  padding-top: 15px;
+}
+#inspector summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #e0e8db;
+  letter-spacing: 0.2px;
+}
+#element-count {
+  font-size: 10px;
+  color: #a9baac;
+}
+#inspector .button-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+#inspector .property-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 10px;
+}
+#inspector .check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 14px 0;
+}
+#draft-status {
+  font-size: 11px;
+  color: #c0d2af;
+  border-left: 2px solid #8ca481;
+  padding-left: 10px;
+  margin-top: 18px;
+}
+#draft-status.error {
+  color: #f0c4a7;
+  border-color: #d69972;
+}
+#inspector #preview-actions {
+  position: sticky;
+  bottom: -22px;
+  background: #2c392c;
+  border: 1px solid #d4c397;
+  padding: 14px;
+  margin: 15px -7px 0;
+  z-index: 2;
+}
+#preview-summary {
+  font-size: 11px;
+  margin: 8px 0;
+}
+#debug-output {
+  font-size: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #b3c3b6;
+}
+.editing .progress {
+  display: none;
+}
+#save-review,
+#reset-draft,
+#export-recovery {
+  margin-top: 10px;
+}
+#save-dialog {
+  border: 1px solid #9bab8d;
+  border-radius: 10px;
+  background: #152521;
+  color: #e3eadb;
+  padding: 28px;
+  max-width: 470px;
+  font-size: 13px;
+}
+#save-dialog::backdrop {
+  background: #06100caa;
+  backdrop-filter: blur(6px);
+}
+#save-dialog h2 {
+  font-size: 25px;
+}
+#save-dialog p {
+  line-height: 1.6;
+}
+#save-dialog a {
+  text-decoration: underline;
+  color: #f0d9a4;
+}
+#save-dialog .check-row {
+  font-size: 12px;
+}
+@media (max-width: 1000px) {
+  body.editing .split,
+  body.editing #close {
+    grid-template-columns: 1fr;
+  }
+  body.editing .scene {
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+  body.editing .explorer {
+    grid-template-columns: 1fr;
+  }
+  body.editing .notes {
+    grid-template-columns: 1fr;
+  }
+  body.editing .sources {
+    margin-top: 25px;
+  }
+  body.editing .concept-document {
+    margin-top: 25px;
+  }
+  body.editing .hero-caption {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  #inspector {
+    width: min(88vw, 360px);
+    box-shadow: 20px 0 70px #0008;
+  }
+  body.editing #main {
+    margin-left: 0;
+    width: 100%;
+  }
+  body.editing header,
+  body.editing footer {
+    left: 7vw;
+    right: 7vw;
+  }
+  body.editing #state-controls {
+    left: 50%;
+  }
+  body.editing .scene {
+    left: 7vw;
+    right: 7vw;
+  }
+  body.editing h1 {
+    font-size: 52px;
+  }
+  body.editing h2 {
+    font-size: 43px;
+  }
+  .editing #inspector input,
+  .editing #inspector textarea,
+  .editing #inspector select {
+    font-size: 16px;
+  }
+  #save-dialog {
+    max-width: 92vw;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}

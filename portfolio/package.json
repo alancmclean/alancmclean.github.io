@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/model.test.mjs tests/bridge.test.mjs",
+    "dev": "node tools/editor-server.mjs",
+    "test:browser": "node tests/browser.cjs && node tests/editor-workflow.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

@@ -1,0 +1,137 @@
+/* Additive player styles: the existing presentation artwork and typography stay intact. */
+[hidden] {
+  display: none !important;
+}
+.header-actions {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+#edit-toggle {
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 7px 14px;
+}
+#state-controls {
+  position: fixed;
+  bottom: 89px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: #182625e8;
+  font-size: 11px;
+}
+#state-controls button {
+  width: 30px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+#state-controls button:hover:not(:disabled) {
+  background: #ffffff14;
+}
+#state-label {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+#main .text-run {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  position: static;
+  width: auto;
+  height: auto;
+}
+.text-run {
+  display: inline;
+  white-space: pre-wrap;
+}
+#intro .intro-copy .text-run {
+  vertical-align: baseline;
+}
+.element-selected {
+  outline: 1px dashed #e9d6a5;
+  outline-offset: 5px;
+}
+.load-error {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  background: #663b24;
+  color: #fff;
+  padding: 15px;
+  width: 100%;
+  font-size: 13px;
+}
+.scene {
+  padding-bottom: 25px;
+}
+.scene.active {
+  transition-duration: 0.16s, 0.16s, 0s;
+}
+body:not(.editing) .element-selected {
+  outline: none;
+}
+@media (max-width: 700px) {
+  .header-actions {
+    gap: 10px;
+  }
+  #edit-toggle {
+    padding: 5px 10px;
+  }
+  #state-controls {
+    bottom: 83px;
+    max-width: 88vw;
+  }
+  #state-label {
+    max-width: 180px;
+  }
+  .scene {
+    bottom: 130px;
+  }
+  .header-actions #index-toggle {
+    gap: 8px;
+  }
+  .controls button {
+    min-width: 36px;
+    min-height: 36px;
+  }
+}
+@media print {
+  .header-actions,
+  #state-controls,
+  #inspector {
+    display: none !important;
+  }
+  .scene {
+    break-inside: avoid;
+  }
+  .text-run {
+    display: inline;
+  }
+  .load-error {
+    display: none;
+  }
+}
