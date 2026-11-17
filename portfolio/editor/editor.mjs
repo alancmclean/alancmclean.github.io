@@ -1,3 +1,4 @@
+import { installCanvas } from "./canvas.mjs";
 import {
   applyPatch,
   contextFor,
@@ -28,6 +29,7 @@ export async function startEditor(player, published) {
     storageBlocked = false,
     bridge = false,
     savePlan = null;
+  let canvas;
   const undo = [],
     redo = [];
   panel.innerHTML = `<div class="inspector-heading"><div><span class="editor-kicker">LOCAL STUDIO</span><h2>Slide inspector</h2></div><button id="close-editor" aria-label="Close inspector">×</button></div>
@@ -37,7 +39,7 @@ export async function startEditor(player, published) {
   <details open><summary>Elements <span id="element-count"></span></summary><p class="editor-note">Select here or click an element on the canvas. Changes affect this state only.</p><label>Selected element<select id="element-select"></select></label><div id="element-properties"></div><button id="reset-element">Reset state overrides</button></details>
   <details><summary>Prompt to edit</summary><p class="connection-label">Agent handoff · No live MCP connection</p><p class="editor-note">Export this slide and your prompt to Codex/Dot. Paste the returned JSON patch here, preview it, then apply. Prompts are not stored or sent automatically.</p><label>Your prompt<textarea id="agent-prompt" rows="3" placeholder="Move the title up 20px in this state…"></textarea></label><div class="button-row"><button id="copy-context">Copy context + prompt</button><button id="download-context">Download context</button></div><label>Returned JSON patch<textarea id="patch-input" rows="5" spellcheck="false" placeholder='{"schemaVersion":1,…}'></textarea></label><button id="preview-patch">Preview patch</button></details>
   <section id="preview-actions" hidden><strong>Preview only — not saved</strong><p id="preview-summary"></p><div class="button-row"><button id="apply-preview">Apply changes</button><button id="cancel-preview">Cancel preview</button></div></section>
-  <details><summary>Storage & review</summary><p id="bridge-status" class="editor-note">Checking local save bridge…</p><div class="button-row"><button id="export-draft">Export draft JSON</button><button id="import-draft">Import draft</button></div><input id="draft-file" type="file" accept=".json,application/json" hidden><button id="save-review">Save to review branch…</button><p class="editor-note">Repository saves are public. Review content before saving. No prompts or browser storage are included.</p><div class="button-row"><button id="export-recovery">Export stored recovery data</button><button id="reset-draft">Reset local draft…</button></div><button id="load-other-tab" hidden>Load the other tab’s draft</button></details>
+  <details><summary>Storage & review</summary><p id="bridge-status" class="editor-note">Checking local save bridge…</p><div class="button-row"><button id="export-draft">Export draft JSON</button><button id="import-draft">Import draft</button></div><input id="draft-file" type="file" accept=".json,application/json" hidden><button id="save-review">Save to review branch…</button><p class="editor-note">Repository saves are public. Review every state and image before saving. Embedded draft images are included; prompts and unrelated browser storage are not.</p><div class="button-row"><button id="export-recovery">Export stored recovery data</button><button id="reset-draft">Reset local draft…</button></div><button id="load-other-tab" hidden>Load the other tab’s draft</button></details>
   <details><summary>Debug</summary><pre id="debug-output"></pre></details>
   <dialog id="save-dialog"><h2>Save a public review branch</h2><p id="save-summary"></p><p>This creates a Git commit on a new review branch. It does not merge or deploy. The saved JSON contains all slides and states, including hidden elements.</p><label class="check-row"><input type="checkbox" id="public-confirm">I reviewed all content and it is safe for this public repository.</label><div class="button-row"><button id="confirm-save">Push review branch</button><button id="cancel-save">Cancel</button></div><p id="save-result" role="status"></p></dialog>`;
   function status(text, error = false) {
@@ -45,12 +47,15 @@ export async function startEditor(player, published) {
     $("#draft-status").classList.toggle("error", error);
   }
   function open() {
+    document.body.classList.remove("inspector-collapsed");
     panel.hidden = false;
     document.body.classList.add("editing");
     refresh();
     $("#close-editor").focus();
   }
   function close() {
+    canvas?.cancel();
+    document.activeElement?.blur();
     cancelPreview();
     panel.hidden = true;
     document.body.classList.remove("editing");
@@ -152,14 +157,24 @@ export async function startEditor(player, published) {
     const box = $("#element-properties");
     box.replaceChildren();
     const inputs = [
-      ["x", "X offset", 0, -3000, 3000, 1],
-      ["y", "Y offset", 0, -3000, 3000, 1],
-      ["scale", "Scale", 1, 0.1, 5, 0.05],
-      ["rotate", "Rotation offset", 0, -360, 360, 1],
+      ...(props.frame
+        ? [
+            ["frame.x", "Center X (%)", 50, -100, 200, 0.1],
+            ["frame.y", "Center Y (%)", 50, -100, 200, 0.1],
+            ["frame.width", "Width (% canvas width)", 20, 0.1, 300, 0.1],
+            ["frame.height", "Height (% canvas width)", 20, 0.1, 300, 0.1],
+            ["frame.angle", "Rotation (°)", 0, -360, 360, 1],
+          ]
+        : [
+            ["x", "X offset", 0, -3000, 3000, 1],
+            ["y", "Y offset", 0, -3000, 3000, 1],
+            ["scale", "Scale", 1, 0.1, 5, 0.05],
+            ["rotate", "Rotation offset", 0, -360, 360, 1],
+            ["width", "Width", null, 20, 2400, 1],
+          ]),
       ["opacity", "Opacity", 1, 0, 1, 0.05],
       ["zIndex", "Layer", 0, -10, 100, 1],
       ["fontSize", "Font size", null, 8, 200, 1],
-      ["width", "Width", null, 20, 2400, 1],
     ];
     const grid = document.createElement("div");
     grid.className = "property-grid";
@@ -174,9 +189,18 @@ export async function startEditor(player, published) {
       input.max = max;
       input.step = step;
       input.placeholder = "Inherit";
-      input.value = props[key] ?? fallback ?? "";
+      input.value =
+        (key.startsWith("frame.") ? props.frame[key.slice(6)] : props[key]) ??
+        fallback ??
+        "";
       input.disabled = !!pending;
       input.onchange = () => {
+        if (key.startsWith("frame.")) {
+          change({
+            frame: { ...props.frame, [key.slice(6)]: Number(input.value) },
+          });
+          return;
+        }
         if (input.value === "") {
           removeProp(key);
           return;
@@ -188,13 +212,13 @@ export async function startEditor(player, published) {
     }
     for (const [key, title, values] of [
       ["animation", "Animation", ["none", "fade", "rise", "scale"]],
-      ["textAlign", "Alignment", ["left", "center", "right"]],
       [
         "transformOrigin",
         "Transform origin",
         ["center", "top left", "top right", "bottom left", "bottom right"],
       ],
     ]) {
+      if (props.frame && key === "transformOrigin") continue;
       const label = document.createElement("label");
       label.textContent = title;
       const select = document.createElement("select");
@@ -273,15 +297,17 @@ export async function startEditor(player, published) {
       box.append(label);
     }
   }
-  function commit(next) {
+  function commit(next, { render = true, history = true } = {}) {
     if (pending) throw Error("Apply or cancel the preview first");
     validateDocument(next);
-    undo.push(structuredClone(doc));
+    if (history) undo.push(structuredClone(doc));
     if (undo.length > 50) undo.shift();
     redo.length = 0;
     doc = next;
-    player.setDocument(doc);
-    player.select(selected);
+    if (render) {
+      player.setDocument(doc);
+      player.select(selected);
+    } else player.document = doc;
     persist();
     refresh();
   }
@@ -420,6 +446,8 @@ export async function startEditor(player, published) {
     commit(copy);
   };
   function historyMove(from, to) {
+    canvas?.cancel();
+    document.activeElement?.blur();
     if (pending || !from.length) return;
     to.push(structuredClone(doc));
     const next = from.pop();
@@ -633,6 +661,12 @@ export async function startEditor(player, published) {
   if (!bridge)
     $("#bridge-status").textContent =
       "Repository save is not connected. Run “npm run dev” in portfolio/ on your authenticated local checkout. Export/import still work here.";
+  canvas = installCanvas(player, {
+    getDocument: () => doc,
+    commit,
+    status,
+    isPreview: () => !!pending,
+  });
   refresh();
   open();
 }

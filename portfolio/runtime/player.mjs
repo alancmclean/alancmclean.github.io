@@ -1,3 +1,4 @@
+import { renderCanvasLayout } from "./canvas-layout.mjs";
 import { validateDocument, flatten } from "./model.mjs";
 export class Player extends EventTarget {
   constructor(documentData, { editor = false } = {}) {
@@ -13,6 +14,10 @@ export class Player extends EventTarget {
     this.readHash();
     this.bind();
     this.render();
+    this.resizeObserver = new ResizeObserver(() =>
+      this.layoutCallbacks?.forEach((fn) => fn()),
+    );
+    this.resizeObserver.observe(this.main);
   }
   get slide() {
     return this.document.slides[this.index];
@@ -94,9 +99,14 @@ export class Player extends EventTarget {
       ) {
         const el = e.target.closest("[data-element-id]");
         if (el) {
-          e.preventDefault();
+          if (
+            !e.target.closest('[contenteditable="true"]') ||
+            e.target.closest("a")
+          )
+            e.preventDefault();
           e.stopPropagation();
-          this.select(el.dataset.elementId);
+          if (this.selected !== el.dataset.elementId)
+            this.select(el.dataset.elementId);
           return;
         }
       }
@@ -136,7 +146,7 @@ export class Player extends EventTarget {
         e.altKey ||
         e.shiftKey ||
         e.target.closest(
-          'input,textarea,select,[contenteditable="true"],#inspector,dialog',
+          'input,textarea,select,[contenteditable="true"],#inspector,#canvas-tools,#canvas-bar,dialog',
         )
       )
         return;
@@ -228,6 +238,20 @@ export class Player extends EventTarget {
       )
     )
       el.style.display = "inline-block";
+    if (node.type === "image") {
+      const asset = this.document.assets[node.assetId];
+      el.src = asset.data;
+      el.alt = asset.alt;
+      el.draggable = false;
+    }
+    if (props.frame) el.dataset.frame = JSON.stringify(props.frame);
+    if (props.fontFamily)
+      el.style.fontFamily =
+        props.fontFamily === "serif" ? "var(--serif)" : "var(--sans)";
+    if (props.lineHeight !== undefined)
+      el.style.lineHeight = String(props.lineHeight);
+    if (props.letterSpacing !== undefined)
+      el.style.letterSpacing = props.letterSpacing + "px";
     if (node.type === "text") el.textContent = props.text ?? node.text;
     else
       for (const child of node.children || [])
@@ -276,6 +300,7 @@ export class Player extends EventTarget {
   render() {
     const focusId = document.activeElement?.id;
     const fragment = document.createDocumentFragment();
+    this.layoutCallbacks = [];
     this.document.slides.forEach((slide, i) => {
       const state = i === this.index ? this.state : slide.states[0],
         el = this.renderNode(slide.root, slide, state);
@@ -283,9 +308,13 @@ export class Player extends EventTarget {
       el.classList.toggle("active", i === this.index);
       el.inert = i !== this.index;
       el.setAttribute("aria-hidden", String(i !== this.index));
+      this.layoutCallbacks.push(
+        renderCanvasLayout(el, slide, state, this.document),
+      );
       fragment.append(el);
     });
     this.main.replaceChildren(fragment);
+    this.layoutCallbacks.forEach((fn) => fn());
     const activeTab = this.main.querySelector(
         ".active [role=tab][aria-selected=true]",
       ),
@@ -352,6 +381,7 @@ export class Player extends EventTarget {
         });
       });
     }
+    this.dispatchEvent(new Event("render"));
     if (focusId && this.main.querySelector("#" + CSS.escape(focusId)))
       this.main
         .querySelector("#" + CSS.escape(focusId))

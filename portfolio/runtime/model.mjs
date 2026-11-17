@@ -1,7 +1,8 @@
 // This schema is also enforced by the local save bridge. Never render imported HTML.
 export const VERSION = 1;
-export const TYPES = ["group", "text", "link", "button", "shape"];
+export const TYPES = ["group", "text", "link", "button", "shape", "image"];
 const TAGS = new Set([
+  "img",
   "section",
   "div",
   "p",
@@ -35,10 +36,13 @@ const RANGES = {
   zIndex: [-10, 100],
   fontSize: [8, 200],
   width: [20, 2400],
+  lineHeight: [0.5, 4],
+  letterSpacing: [-20, 50],
   animationDuration: [0, 3000],
   animationDelay: [0, 3000],
 };
 const ENUMS = {
+  fontFamily: ["sans", "serif"],
   animation: ["none", "fade", "rise", "scale"],
   textAlign: ["left", "center", "right"],
   fontWeight: ["300", "400", "500", "600", "700"],
@@ -59,6 +63,7 @@ export const PROP_KEYS = [
   "text",
   "href",
   "stateTarget",
+  "frame",
 ];
 const fail = (message) => {
   throw new Error(message);
@@ -89,6 +94,7 @@ export function flatten(node) {
 export function validateProps(props, element, slide) {
   keys(props, PROP_KEYS, "override");
   for (const [k, v] of Object.entries(props)) {
+    if (k === "frame") validateFrame(v);
     if (
       k in RANGES &&
       (typeof v !== "number" ||
@@ -121,7 +127,7 @@ export function validateProps(props, element, slide) {
 export function validateDocument(doc) {
   keys(
     doc,
-    ["schemaVersion", "id", "revision", "title", "slides"],
+    ["schemaVersion", "id", "revision", "title", "slides", "assets"],
     "presentation",
   );
   if (doc.schemaVersion !== VERSION) fail("Unsupported presentation version");
@@ -138,6 +144,24 @@ export function validateDocument(doc) {
     doc.slides.length > 50
   )
     fail("Expected 1–50 slides");
+  const assets = doc.assets || {};
+  if (!object(assets) || Object.keys(assets).length > 12)
+    fail("Expected at most 12 local image assets");
+  for (const [id, asset] of Object.entries(assets)) {
+    if (!isId(id)) fail("Invalid asset id");
+    keys(asset, ["data", "width", "height", "alt"], "image asset");
+    validateImageData(asset.data);
+    if (
+      !Number.isInteger(asset.width) ||
+      !Number.isInteger(asset.height) ||
+      asset.width < 1 ||
+      asset.height < 1 ||
+      asset.width > 1600 ||
+      asset.height > 1600 ||
+      !string(asset.alt, 300)
+    )
+      fail("Invalid image metadata");
+  }
   const slideIds = new Set(),
     globalIds = new Set();
   for (const slide of doc.slides) {
@@ -153,7 +177,7 @@ export function validateDocument(doc) {
       fail("Expected 1–30 states");
     const stateIds = new Set();
     for (const state of slide.states) {
-      keys(state, ["id", "label", "overrides"], "state");
+      keys(state, ["id", "label", "overrides", "background"], "state");
       if (
         !isId(state.id) ||
         stateIds.has(state.id) ||
@@ -161,6 +185,16 @@ export function validateDocument(doc) {
       )
         fail("Invalid state");
       stateIds.add(state.id);
+      if (state.background !== undefined && state.background !== null) {
+        const bg = state.background;
+        keys(bg, ["assetId", "fit", "x", "y"], "background");
+        if (
+          !assets[bg.assetId] ||
+          !["cover", "contain"].includes(bg.fit) ||
+          ![bg.x, bg.y].every((n) => Number.isFinite(n) && n >= 0 && n <= 100)
+        )
+          fail("Invalid slide background");
+      }
     }
     const nodes = [];
     function inspect(n, depth = 0) {
@@ -168,7 +202,17 @@ export function validateDocument(doc) {
         fail("Element tree exceeds limits");
       keys(
         n,
-        ["id", "type", "tag", "attrs", "text", "children", "base", "action"],
+        [
+          "id",
+          "type",
+          "tag",
+          "attrs",
+          "text",
+          "children",
+          "base",
+          "action",
+          "assetId",
+        ],
         "element",
       );
       if (
@@ -183,6 +227,15 @@ export function validateDocument(doc) {
         (n.tag === "button") !== (n.type === "button")
       )
         fail("Element type and tag disagree");
+      if ((n.tag === "img") !== (n.type === "image"))
+        fail("Image type and tag disagree");
+      if (
+        n.type === "image" &&
+        (!assets[n.assetId] || n.children !== undefined)
+      )
+        fail("Invalid image reference");
+      if (n.type !== "image" && n.assetId !== undefined)
+        fail("Unexpected image reference");
       globalIds.add(n.id);
       nodes.push(n);
       if (n.type === "text" && (!string(n.text) || n.children !== undefined))
@@ -336,4 +389,45 @@ export function writeDraft(storage, document, published) {
   // Never remove a previous draft before the replacement succeeds (quota/private-mode errors).
   storage.setItem(DRAFT_KEY, JSON.stringify(envelope));
   return envelope.savedAt;
+}
+
+// Additive v1 canvas fields preserve existing drafts; no executable asset formats.
+export function validateFrame(frame) {
+  keys(
+    frame,
+    ["x", "y", "width", "height", "angle", "naturalWidth", "naturalHeight"],
+    "frame",
+  );
+  for (const [key, min, max] of [
+    ["x", -100, 200],
+    ["y", -100, 200],
+    ["width", 0.1, 300],
+    ["height", 0.1, 300],
+    ["angle", -360, 360],
+    ["naturalWidth", 1, 6000],
+    ["naturalHeight", 1, 6000],
+  ]) {
+    if (!Number.isFinite(frame[key]) || frame[key] < min || frame[key] > max)
+      fail("Invalid frame " + key);
+  }
+}
+export function validateImageData(data) {
+  if (typeof data !== "string" || data.length > 600000)
+    fail("Image exceeds 600 KB encoded limit");
+  const match =
+    /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(data);
+  if (!match) fail("Only embedded PNG, JPEG, or WebP images are allowed");
+  let bytes;
+  try {
+    bytes = atob(match[2].slice(0, 48));
+  } catch {
+    fail("Invalid image encoding");
+  }
+  const valid =
+    match[1] === "png"
+      ? bytes.startsWith("\x89PNG\r\n\x1a\n")
+      : match[1] === "jpeg"
+        ? bytes.startsWith("\xff\xd8\xff")
+        : bytes.startsWith("RIFF") && bytes.slice(8, 12) === "WEBP";
+  if (!valid) fail("Image content does not match its format");
 }

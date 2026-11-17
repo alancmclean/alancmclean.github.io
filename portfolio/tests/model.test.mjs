@@ -117,3 +117,47 @@ test("agent context includes one slide, exact revision and patch contract", () =
   assert.equal(context.slides, undefined);
   assert.equal(context.patchTemplate.slideId, "docs");
 });
+
+test("canvas frames and raster assets round-trip without executable content", () => {
+  const image =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6nN8AAAAASUVORK5CYII=";
+  const next = structuredClone(doc);
+  next.assets = { sample: { data: image, width: 1, height: 1, alt: "Sample" } };
+  next.slides[0].root.children.push({
+    id: "local-image",
+    type: "image",
+    tag: "img",
+    assetId: "sample",
+    base: { visible: false },
+  });
+  next.slides[0].states[0].overrides["local-image"] = {
+    visible: true,
+    frame: {
+      x: 50,
+      y: 50,
+      width: 30,
+      height: 20,
+      angle: 15,
+      naturalWidth: 100,
+      naturalHeight: 50,
+    },
+  };
+  next.slides[0].states[0].background = {
+    assetId: "sample",
+    fit: "cover",
+    x: 50,
+    y: 30,
+  };
+  assert.deepEqual(validateDocument(JSON.parse(JSON.stringify(next))), next);
+  for (const mutate of [
+    (d) => (d.assets.sample.data = "data:image/svg+xml;base64,PHN2Zz4="),
+    (d) => (d.assets.sample.data = "data:image/png;base64,PHN2Zz4="),
+    (d) => (d.slides[0].states[0].overrides["local-image"].frame.x = Infinity),
+    (d) => (d.slides[0].states[0].background.assetId = "missing"),
+    (d) => (d.assets.sample.data += "A".repeat(600001)),
+  ]) {
+    const invalid = structuredClone(next);
+    mutate(invalid);
+    assert.throws(() => validateDocument(invalid));
+  }
+});
